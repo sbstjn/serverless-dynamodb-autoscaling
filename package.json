@@ -1,0 +1,52 @@
+{
+  "name": "serverless-dynamodb-autoscaling",
+  "description": "Serverless Plugin for Amazon DynamoDB Auto Scaling configuration.",
+  "version": "0.0.0",
+  "main": "src/plugin.js",
+  "scripts": {
+    "test": "jest test",
+    "test:cover": "jest test --coverage",
+    "coveralls": "cat ./coverage/lcov.info | coveralls",
+    "lint": "standard | snazzy"
+  },
+  "keywords": [
+    "serverless",
+    "sls",
+    "plugin",
+    "dynamodb",
+    "autoscaling",
+    "atuo-scaling",
+    "amazon",
+    "aws"
+  ],
+  "author": "Sebastian Müller <mail@sbstjn.com>",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/sbstjn/serverless-dynamodb-autoscaling.git"
+  },
+  "bugs": {
+    "url": "https://github.com/sbstjn/serverless-dynamodb-autoscaling/issues"
+  },
+  "homepage": "https://github.com/sbstjn/serverless-dynamodb-autoscaling",
+  "devDependencies": {
+    "coveralls": "^2.13.1",
+    "dot-json": "^1.0.3",
+    "jest": "^20.0.4",
+    "snazzy": "^7.0.0",
+    "standard": "^10.0.2"
+  },
+  "dependencies": {
+    "lodash": "^4.17.4"
+  },
+  "standard": {
+    "envs": [
+      "node",
+      "jest"
+    ],
+    "ignore": [
+      "node_modules/",
+      "coverage"
+    ]
+  }
+}
