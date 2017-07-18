@@ -24,8 +24,6 @@ class Plugin {
     assert(this.serverless.service.provider.name === 'aws', 'Only supported for AWS provider')
 
     assert(this.serverless.service.custom.capacities, 'No Auto Scaling configuration found')
-
-    // assert(this.options && !this.options.noDeploy, 'Used --noDeploy flag')
   }
 
   defaults (config) {
