@@ -1,4 +1,4 @@
-# ⚡️ Serverless Plugin for Amazon DynamoDB Auto Scaling
+# ⚡️ Serverless Plugin for DynamoDB Auto Scaling
 
 [![npm](https://img.shields.io/npm/v/serverless-dynamodb-autoscaling.svg)](https://www.npmjs.com/package/serverless-dynamodb-autoscaling)
 [![CircleCI](https://img.shields.io/circleci/project/github/sbstjn/serverless-dynamodb-autoscaling.svg)](https://circleci.com/gh/sbstjn/serverless-dynamodb-autoscaling)

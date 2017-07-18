@@ -1,4 +1,3 @@
-const util = require('util')
 const names = require('./names')
 
 class Policy {

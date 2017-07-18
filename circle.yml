@@ -18,6 +18,6 @@ deployment:
   release:
     tag: /v[0-9]+(\.[0-9]+)*/
     commands:
-      - echo "//registry.npmjs.org/:_authToken=$NPM_TOKEN" >> ~/serverless-dynamodb-autoscale/.npmrc
+      - echo "//registry.npmjs.org/:_authToken=$NPM_TOKEN" >> ~/serverless-dynamodb-autoscaling/.npmrc
       - $(yarn bin)/dot-json package.json version ${CIRCLE_TAG:1}
       - npm publish

@@ -41,5 +41,3 @@ describe('Names', () => {
     expect(names.target('test-with-invalid-characters', false)).toBe('AutoScalingTargetWritetestwithinvalidcharacters')
   })
 })
-
-

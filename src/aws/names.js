@@ -9,4 +9,4 @@ const target = (table, read) => clean(util.format('AutoScalingTarget%s-%s', read
 const metric = (read) => clean(util.format('DynamoDB%sCapacityUtilization', read ? 'Read' : 'Write'))
 const role = (table) => clean(util.format('DynamoDBAutoscaleRole-%s', table))
 
-module.exports = {  dimension, metric, policyScale, policyRole, role, target, }
+module.exports = { dimension, metric, policyScale, policyRole, role, target }
