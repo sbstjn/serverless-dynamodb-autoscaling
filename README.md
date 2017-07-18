@@ -7,6 +7,8 @@
 
 With this plugin for [serverless](https://serverless.com) you can set DynamoDB Auto Scaling configuratin in your `serverless.yml` file. The plugin supports multiple tables and separate configuration sets for `read` and `write` capacities.
 
+**Warning:** *The created role policy uses `*` for resource access to DynamoDB. This needs to changed in an upcoming release. Be careful when you use this in a (sensitive) production environment!*
+
 ## Usage
 
 Add the npm package to your project:
