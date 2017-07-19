@@ -5,13 +5,11 @@
 [![license](https://img.shields.io/github/license/sbstjn/serverless-dynamodb-autoscaling.svg)](https://github.com/sbstjn/serverless-dynamodb-autoscaling/blob/master/LICENSE.md)
 [![Coveralls](https://img.shields.io/coveralls/sbstjn/serverless-dynamodb-autoscaling.svg)](https://coveralls.io/github/sbstjn/serverless-dynamodb-autoscaling)
 
-With this plugin for [serverless](https://serverless.com) you can set DynamoDB Auto Scaling configuratin in your `serverless.yml` file. The plugin supports multiple tables and separate configuration sets for `read` and `write` capacities.
-
-**Warning:** *The created role policy uses `*` for resource access to DynamoDB. This needs to changed in an upcoming release. Be careful when you use this in a (sensitive) production environment!*
+With this plugin for [serverless](https://serverless.com) you can set DynamoDB Auto Scaling configuratin in your `serverless.yml` file. The plugin supports multiple tables and separate configuration sets for `read` and `write` capacities using AWS [native DynamoDB Auto Scaling](https://aws.amazon.com/blogs/aws/new-auto-scaling-for-amazon-dynamodb/).
 
 ## Usage
 
-Add the npm package to your project:
+Add the [NPM package](https://www.npmjs.com/package/serverless-dynamodb-autoscaling) to your project:
 
 ```bash
 # Via yarn
@@ -44,13 +42,16 @@ custom:
         minimum: 40       # Minimum write capacity
         maximum: 200      # Maximum write capacity
         usage: 0.5        # Targeted usage percentage
-    - name: custom-table-2nd
+    - name: another-table
       read:
         minimum: 5
         maximum: 1000
+        # usage: 0.75 is the default
 ```
 
-That's it! After the next deployment (`sls deploy`) serverless will configure your Auto Scaling for DynamoDB.
+That's it! With the next deployment (`sls deploy`) serverless will add a CloudFormation configuration to enable Auto Scaling for the DynamoDB tables `custom-table` and `another-table`.
+
+You must of course provide at least a configuration for `read` or `write` to enable Auto Scaling. The value for `usage` has a default of 75 percent.
 
 ## DynamoDB
 
@@ -78,8 +79,13 @@ resources:
 
 Feel free to use the code, it's released using the [MIT license](LICENSE.md).
 
+## Thanks
+
+- [TrentBartlem](https://github.com/TrentBartlem)'s [Gist]*https://gist.github.com/TrentBartlem/292be37d496361d551fff6659d87fb0e) 👍
+- [daniel](https://forums.aws.amazon.com/message.jspa?messageID=789667#jive-message-792127)'s post in the AWS Developer Forums 👍
+
 ## Contribution
 
-You are more than welcome to contribute to this project! 😘
+You are welcome to contribute to this project! 😘 
 
 To make sure you have a pleasant experience, please read the [code of conduct](CODE_OF_CONDUCT.md). It outlines core values and believes and will make working together a happier experience.
