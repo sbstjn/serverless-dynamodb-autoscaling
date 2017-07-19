@@ -7,7 +7,7 @@ describe('Policy', () => {
     const j = p.toJSON()
 
     expect(j).toHaveProperty(names.policyScale('my-table-name', true))
-    
+
     const d = j[names.policyScale('my-table-name', true)]
 
     expect(d).toHaveProperty('Type', 'AWS::ApplicationAutoScaling::ScalingPolicy')
@@ -28,7 +28,7 @@ describe('Policy', () => {
     const j = p.toJSON()
 
     expect(j).toHaveProperty(names.policyScale('my-table-name', false))
-    
+
     const d = j[names.policyScale('my-table-name', false)]
 
     expect(d).toHaveProperty('Type', 'AWS::ApplicationAutoScaling::ScalingPolicy')
