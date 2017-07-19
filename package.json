@@ -14,8 +14,9 @@
     "sls",
     "plugin",
     "dynamodb",
+    "cloudformation",
     "autoscaling",
-    "atuo-scaling",
+    "auto-scaling",
     "amazon",
     "aws"
   ],
