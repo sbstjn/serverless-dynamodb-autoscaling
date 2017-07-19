@@ -81,8 +81,8 @@ Feel free to use the code, it's released using the [MIT license](LICENSE.md).
 
 ## Thanks
 
-- [TrentBartlem](https://github.com/TrentBartlem)'s [Gist](https://gist.github.com/TrentBartlem/292be37d496361d551fff6659d87fb0e) 👍
-- [daniel](https://forums.aws.amazon.com/message.jspa?messageID=789667#jive-message-792127)'s post in the AWS Developer Forums 👍
+- [TrentBartlem](https://github.com/TrentBartlem)'s [Gist](https://gist.github.com/TrentBartlem/292be37d496361d551fff6659d87fb0e) 
+- [daniel](https://forums.aws.amazon.com/message.jspa?messageID=789667#jive-message-792127)'s post in the AWS Developer Forums
 
 ## Contribution
 
