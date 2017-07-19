@@ -58,7 +58,7 @@ class Plugin {
 
         // Start processing configuration
         this.serverless.cli.log(
-          util.format(' - Building configuration for table "%s"', table.name)
+          util.format(' - Adding configuration for table "%s"', table.name)
         )
 
         // Add role to manage Auto Scaling policies
@@ -87,8 +87,6 @@ class Plugin {
             resource.toJSON()
           )
         )
-
-        this.serverless.cli.log('   Done.')
       }
     )
 
