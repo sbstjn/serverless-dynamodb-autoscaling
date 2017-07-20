@@ -1,5 +1,15 @@
 const names = require('../../src/aws/names')
 
+describe('Clean', () => {
+  it('removes non alphanumeric characters', () => {
+    expect(names.clean('a-b-c')).toBe('abc')
+    expect(names.clean('a-b_c')).toBe('abc')
+    expect(names.clean('A-b_9')).toBe('Ab9')
+    expect(names.clean('A/b*9')).toBe('Ab9')
+    expect(names.clean('Ä-ç_9')).toBe('9')
+  })
+})
+
 describe('Names', () => {
   it('creates name for Role', () => {
     expect(names.role('test-with-invalid-characters')).toBe('DynamoDBAutoscaleRoletestwithinvalidcharacters')
