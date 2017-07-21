@@ -26,9 +26,9 @@ class Plugin {
     assert(this.serverless.service.custom.capacities, 'No Auto Scaling configuration found')
   }
 
-  defaults (config) {
+  defaults (table, config) {
     return {
-      table: config.table,
+      table: table,
       read: {
         usage: config.read && config.read.usage ? config.read.usage : 0.75,
         minimum: config.read && config.read.minimum ? config.read.minimum : 5,
@@ -52,41 +52,50 @@ class Plugin {
           )
         }
 
-        // Fill configuration with defaults for missing values
-        const table = this.defaults(config)
-        const resources = []
-
-        // Start processing configuration
-        this.serverless.cli.log(
-          util.format(' - Adding configuration for resource "%s"', table.table)
-        )
-
-        // Add role to manage Auto Scaling policies
-        resources.push(new Role(table.table))
-
-        // Only add Auto Scaling for read capacity if configuration set is available
-        if (config.read) {
-          resources.push(
-            new Policy(table.table, table.read.usage, true, 60, 60),
-            new Target(table.table, table.read.minimum, table.read.maximum, true)
-          )
+        const tables = []
+        if (config.table.constructor !== Array) {
+          tables.push(config.table)
+        } else {
+          config.table.forEach(table => tables.push(table))
         }
 
-        // Only add Auto Scaling for write capacity if configuration set is available
-        if (config.write) {
-          resources.push(
-            new Policy(table.table, table.write.usage, false, 60, 60),
-            new Target(table.table, table.write.minimum, table.write.maximum, false)
-          )
-        }
+        tables.forEach(table => {
+          // Fill configuration with defaults for missing values
+          const data = this.defaults(table, config)
+          const resources = []
 
-        // Inject templates in serverless CloudFormation template
-        resources.forEach(
-          resource => _.merge(
-            this.serverless.service.provider.compiledCloudFormationTemplate.Resources,
-            resource.toJSON()
+          // Start processing configuration
+          this.serverless.cli.log(
+            util.format(' - Adding configuration for resource "%s"', data.table)
           )
-        )
+
+          // Add role to manage Auto Scaling policies
+          resources.push(new Role(data.table))
+
+          // Only add Auto Scaling for read capacity if configuration set is available
+          if (config.read) {
+            resources.push(
+              new Policy(data.table, data.read.usage, true, 60, 60),
+              new Target(data.table, data.read.minimum, data.read.maximum, true)
+            )
+          }
+
+          // Only add Auto Scaling for write capacity if configuration set is available
+          if (config.write) {
+            resources.push(
+              new Policy(data.table, data.write.usage, false, 60, 60),
+              new Target(data.table, data.write.minimum, data.write.maximum, false)
+            )
+          }
+
+          // Inject templates in serverless CloudFormation template
+          resources.forEach(
+            resource => _.merge(
+              this.serverless.service.provider.compiledCloudFormationTemplate.Resources,
+              resource.toJSON()
+            )
+          )
+        })
       }
     )
 
