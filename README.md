@@ -28,12 +28,12 @@ plugins:
   - serverless-dynamodb-autoscaling
 ```
 
-Configure DynamoDB Auto Scaling in `serverless.yml`:
+Configure DynamoDB Auto Scaling in `serverless.yml` with references to your DynamoDB CloudFormation resources:
 
 ```yaml
 custom:
   capacities:
-    - name: custom-table  # DynamoDB table name
+    - table: CustomTable  # DynamoDB Resource
       read:
         minimum: 5        # Minimum read capacity
         maximum: 1000     # Maximum read capacity
@@ -42,16 +42,18 @@ custom:
         minimum: 40       # Minimum write capacity
         maximum: 200      # Maximum write capacity
         usage: 0.5        # Targeted usage percentage
-    - name: another-table
+    - table: AnotherTable
       read:
         minimum: 5
         maximum: 1000
         # usage: 0.75 is the default
 ```
 
-That's it! With the next deployment (`sls deploy`) serverless will add a CloudFormation configuration to enable Auto Scaling for the DynamoDB tables `custom-table` and `another-table`.
+That's it! With the next deployment (`sls deploy`) serverless will add a CloudFormation configuration to enable Auto Scaling for the DynamoDB resources `CustomTable` and `AnotherTable`.
 
 You must of course provide at least a configuration for `read` or `write` to enable Auto Scaling. The value for `usage` has a default of 75 percent.
+
+**Notice:** *With the relese of `v0.2.x` the plugin introduced a breaking change. Starting with `v0.2.0` you need to provide the CloudFormation reference for the `table` property. In `v0.1.x` the plugin used a `name` property with the DynamoDB table name.
 
 ## DynamoDB
 

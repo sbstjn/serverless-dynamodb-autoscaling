@@ -13,6 +13,10 @@ class Policy {
     return {
       [names.policyScale(this.table, this.read)]: {
         'Type': 'AWS::ApplicationAutoScaling::ScalingPolicy',
+        'DependsOn': [
+          this.table,
+          names.target(this.table, this.read),
+        ],
         'Properties': {
           'PolicyName': names.policyScale(this.table, this.read),
           'PolicyType': 'TargetTrackingScaling',

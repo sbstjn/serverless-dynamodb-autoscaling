@@ -11,10 +11,8 @@ describe('Target', () => {
     const d = j[names.target('my-table-name', true)]
 
     expect(d).toHaveProperty('Type', 'AWS::ApplicationAutoScaling::ScalableTarget')
-    expect(d).toHaveProperty('DependsOn', names.role('my-table-name'))
     expect(d).toHaveProperty('Properties.MinCapacity', 4)
     expect(d).toHaveProperty('Properties.MaxCapacity', 100)
-    expect(d).toHaveProperty('Properties.ResourceId', 'table/my-table-name')
     expect(d).toHaveProperty('Properties.ScalableDimension', names.dimension(true))
     expect(d).toHaveProperty('Properties.ServiceNamespace', 'dynamodb')
     expect(d).toHaveProperty('Properties.RoleARN.Fn::GetAtt')
@@ -30,10 +28,8 @@ describe('Target', () => {
     const d = j[names.target('my-table-name', false)]
 
     expect(d).toHaveProperty('Type', 'AWS::ApplicationAutoScaling::ScalableTarget')
-    expect(d).toHaveProperty('DependsOn', names.role('my-table-name'))
     expect(d).toHaveProperty('Properties.MinCapacity', 100)
     expect(d).toHaveProperty('Properties.MaxCapacity', 2000)
-    expect(d).toHaveProperty('Properties.ResourceId', 'table/my-table-name')
     expect(d).toHaveProperty('Properties.ScalableDimension', names.dimension(false))
     expect(d).toHaveProperty('Properties.ServiceNamespace', 'dynamodb')
     expect(d).toHaveProperty('Properties.RoleARN.Fn::GetAtt')
