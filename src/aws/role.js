@@ -1,17 +1,12 @@
 const names = require('./names')
 
 class Role {
-  constructor (table) {
+  constructor (table, index) {
     this.table = table
+    this.index = index
   }
 
   toJSON () {
-    const resource = [ 'arn:aws:dynamodb:*:', { 'Ref': 'AWS::AccountId' }, ':table/', { 'Ref': this.table } ]
-
-    if (this.index) {
-      resource.push('/index/', this.index)
-    }
-
     return {
       [names.role(this.table, this.index)]: {
         'Type': 'AWS::IAM::Role',
@@ -55,7 +50,7 @@ class Role {
                       'dynamodb:DescribeTable',
                       'dynamodb:UpdateTable'
                     ],
-                    'Resource': { 'Fn::Join': [ '', resource ] }
+                    'Resource': { 'Fn::Join': [ '', [ 'arn:aws:dynamodb:*:', { 'Ref': 'AWS::AccountId' }, ':table/', { 'Ref': this.table } ] ] }
                   }
                 ]
               }

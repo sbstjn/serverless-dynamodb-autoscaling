@@ -1,8 +1,9 @@
 const names = require('./names')
 
 class Target {
-  constructor (table, min, max, read) {
+  constructor (table, min, max, read, index) {
     this.table = table
+    this.index = index
     this.min = parseInt(min, 10)
     this.max = parseInt(max, 10)
     this.read = !!read
@@ -25,9 +26,9 @@ class Target {
         'Properties': {
           'MaxCapacity': this.max,
           'MinCapacity': this.min,
-          'ResourceId': { 'Fn::Join': [ '', [ 'table/', { 'Ref': this.table } ] ] },
+          'ResourceId': { 'Fn::Join': [ '', resource ] },
           'RoleARN': { 'Fn::GetAtt': [ names.role(this.table, this.index), 'Arn' ] },
-          'ScalableDimension': names.dimension(this.read),
+          'ScalableDimension': names.dimension(this.read, this.index),
           'ServiceNamespace': 'dynamodb'
         }
       }

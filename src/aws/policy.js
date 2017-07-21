@@ -1,8 +1,9 @@
 const names = require('./names')
 
 class Policy {
-  constructor (table, value, read, scaleIn, scaleOut) {
+  constructor (table, value, read, scaleIn, scaleOut, index) {
     this.table = table
+    this.index = index
     this.value = parseFloat(value, 10) * 100
     this.read = !!read
     this.scaleIn = parseInt(scaleIn, 10)

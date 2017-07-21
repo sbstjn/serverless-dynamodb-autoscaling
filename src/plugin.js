@@ -42,32 +42,48 @@ class Plugin {
     }
   }
 
-  resources(table, config) {
+  resources (table, config, index) {
     const data = this.defaults(table, config)
+    const resources = []
+    const indexes = []
 
-    // Start processing configuration
-    this.serverless.cli.log(
-      util.format(' - Adding configuration for resource "%s"', data.table)
-    )
-
-    // Add role to manage Auto Scaling policies
-    resources.push(new Role(data.table))
-
-    // Only add Auto Scaling for read capacity if configuration set is available
-    if (config.read) {
-      resources.push(
-        new Policy(data.table, data.read.usage, true, 60, 60),
-        new Target(data.table, data.read.minimum, data.read.maximum, true)
-      )
+    if (!config.indexOnly) {
+      indexes.push(null) // Horrible solution
     }
 
-    // Only add Auto Scaling for write capacity if configuration set is available
-    if (config.write) {
-      resources.push(
-        new Policy(data.table, data.write.usage, false, 60, 60),
-        new Target(data.table, data.write.minimum, data.write.maximum, false)
-      )
+    if (index) {
+      if (index.constructor !== Array) {
+        indexes.push(index)
+      } else {
+        index.forEach(index => indexes.push(index))
+      }
     }
+
+    indexes.forEach(index => {
+      // Start processing configuration
+      this.serverless.cli.log(
+        util.format(' - Building configuration for resource "%s%s"', data.table, (index ? ('/index/' + index) : ''))
+      )
+
+      // Add role to manage Auto Scaling policies
+      resources.push(new Role(data.table, index))
+
+      // Only add Auto Scaling for read capacity if configuration set is available
+      if (config.read) {
+        resources.push(
+          new Policy(data.table, data.read.usage, true, 60, 60, index),
+          new Target(data.table, data.read.minimum, data.read.maximum, true, index)
+        )
+      }
+
+      // Only add Auto Scaling for write capacity if configuration set is available
+      if (config.write) {
+        resources.push(
+          new Policy(data.table, data.write.usage, false, 60, 60, index),
+          new Target(data.table, data.write.minimum, data.write.maximum, false, index)
+        )
+      }
+    })
 
     return resources
   }
@@ -90,7 +106,7 @@ class Plugin {
         }
 
         tables.forEach(table => {
-          const resources = this.resources(table, config)
+          const resources = this.resources(table, config, config.index)
 
           // Inject templates in serverless CloudFormation template
           resources.forEach(
@@ -119,11 +135,11 @@ class Plugin {
       () => this.serverless.cli.log(
         util.format('Added DynamoDB Auto Scaling to CloudFormation!')
       )
-    ).catch(
+    )/* .catch(
       err => this.serverless.cli.log(
         util.format('Skipping DynamoDB Auto Scaling: %s!', err.message)
-      )
-    )
+      ) && console.log(err)
+    ) */
   }
 }
 
