@@ -53,7 +53,7 @@ That's it! With the next deployment (`sls deploy`) serverless will add a CloudFo
 
 You must of course provide at least a configuration for `read` or `write` to enable Auto Scaling. The value for `usage` has a default of 75 percent.
 
-**Notice:** *With the relese of `v0.2.x` the plugin introduced a breaking change. Starting with `v0.2.0` you need to provide the CloudFormation reference for the `table` property. In `v0.1.x` the plugin used a `name` property with the DynamoDB table name.*
+**Notice:** *With the release of `v0.2.x` the plugin introduced a breaking change. Starting with `v0.2.0` you need to provide the CloudFormation reference for the `table` property. In `v0.1.x` the plugin used a `name` property with the DynamoDB table name.*
 
 ## DynamoDB
 
