@@ -11,16 +11,16 @@ class Policy {
 
   toJSON () {
     return {
-      [names.policyScale(this.table, this.read)]: {
+      [names.policyScale(this.table, this.read, this.index)]: {
         'Type': 'AWS::ApplicationAutoScaling::ScalingPolicy',
         'DependsOn': [
           this.table,
-          names.target(this.table, this.read)
+          names.target(this.table, this.read, this.index)
         ],
         'Properties': {
-          'PolicyName': names.policyScale(this.table, this.read),
+          'PolicyName': names.policyScale(this.table, this.read, this.index),
           'PolicyType': 'TargetTrackingScaling',
-          'ScalingTargetId': { 'Ref': names.target(this.table, this.read) },
+          'ScalingTargetId': { 'Ref': names.target(this.table, this.read, this.index) },
           'TargetTrackingScalingPolicyConfiguration': {
             'PredefinedMetricSpecification': {
               'PredefinedMetricType': names.metric(this.read)

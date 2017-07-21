@@ -68,6 +68,8 @@ class Plugin {
         new Target(data.table, data.write.minimum, data.write.maximum, false)
       )
     }
+
+    return resources
   }
 
   process () {
