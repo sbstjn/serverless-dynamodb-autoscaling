@@ -15,7 +15,7 @@ class Policy {
         'Type': 'AWS::ApplicationAutoScaling::ScalingPolicy',
         'DependsOn': [
           this.table,
-          names.target(this.table, this.read),
+          names.target(this.table, this.read)
         ],
         'Properties': {
           'PolicyName': names.policyScale(this.table, this.read),
