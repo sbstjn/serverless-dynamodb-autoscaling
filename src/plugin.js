@@ -28,7 +28,7 @@ class Plugin {
 
   defaults (config) {
     return {
-      name: config.name,
+      table: config.table,
       read: {
         usage: config.read && config.read.usage ? config.read.usage : 0.75,
         minimum: config.read && config.read.minimum ? config.read.minimum : 5,
@@ -48,7 +48,7 @@ class Plugin {
         // Skip set if no read or write scaling configuration is available
         if (!config.read && !config.write) {
           return this.serverless.cli.log(
-            util.format(' - Skipping configuration for table "%s"', config.name)
+            util.format(' - Skipping configuration for resource "%s"', config.table)
           )
         }
 
@@ -58,25 +58,25 @@ class Plugin {
 
         // Start processing configuration
         this.serverless.cli.log(
-          util.format(' - Adding configuration for table "%s"', table.name)
+          util.format(' - Adding configuration for resource "%s"', table.table)
         )
 
         // Add role to manage Auto Scaling policies
-        resources.push(new Role(table.name))
+        resources.push(new Role(table.table))
 
         // Only add Auto Scaling for read capacity if configuration set is available
         if (config.read) {
           resources.push(
-            new Policy(table.name, table.read.usage, true, 60, 60),
-            new Target(table.name, table.read.minimum, table.read.maximum, true)
+            new Policy(table.table, table.read.usage, true, 60, 60),
+            new Target(table.table, table.read.minimum, table.read.maximum, true)
           )
         }
 
         // Only add Auto Scaling for write capacity if configuration set is available
         if (config.write) {
           resources.push(
-            new Policy(table.name, table.write.usage, false, 60, 60),
-            new Target(table.name, table.write.minimum, table.write.maximum, false)
+            new Policy(table.table, table.write.usage, false, 60, 60),
+            new Target(table.table, table.write.minimum, table.write.maximum, false)
           )
         }
 

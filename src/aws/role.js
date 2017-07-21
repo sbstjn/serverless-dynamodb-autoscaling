@@ -9,6 +9,9 @@ class Role {
     return {
       [names.role(this.table)]: {
         'Type': 'AWS::IAM::Role',
+        'DependsOn': [
+          this.table
+        ],
         'Properties': {
           'RoleName': names.role(this.table),
           'AssumeRolePolicyDocument': {
@@ -46,7 +49,7 @@ class Role {
                       'dynamodb:DescribeTable',
                       'dynamodb:UpdateTable'
                     ],
-                    'Resource': { 'Fn::Join': [ '', [ 'arn:aws:dynamodb:*:', { 'Ref': 'AWS::AccountId' }, ':table/' + this.table ] ] }
+                    'Resource': { 'Fn::Join': [ '', [ 'arn:aws:dynamodb:*:', { 'Ref': 'AWS::AccountId' }, ':table/', { 'Ref': this.table } ] ] }
                   }
                 ]
               }

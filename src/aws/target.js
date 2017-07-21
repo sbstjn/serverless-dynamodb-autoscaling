@@ -1,4 +1,3 @@
-const util = require('util')
 const names = require('./names')
 
 class Target {
@@ -13,11 +12,14 @@ class Target {
     return {
       [names.target(this.table, this.read)]: {
         'Type': 'AWS::ApplicationAutoScaling::ScalableTarget',
-        'DependsOn': names.role(this.table),
+        'DependsOn': [
+          this.table,
+          names.role(this.table)
+        ],
         'Properties': {
           'MaxCapacity': this.max,
           'MinCapacity': this.min,
-          'ResourceId': util.format('table/%s', this.table),
+          'ResourceId': { 'Fn::Join': [ '', [ 'table/', { 'Ref': this.table } ] ] },
           'RoleARN': { 'Fn::GetAtt': [ names.role(this.table), 'Arn' ] },
           'ScalableDimension': names.dimension(this.read),
           'ServiceNamespace': 'dynamodb'
