@@ -42,6 +42,34 @@ class Plugin {
     }
   }
 
+  resources(table, config) {
+    const data = this.defaults(table, config)
+
+    // Start processing configuration
+    this.serverless.cli.log(
+      util.format(' - Adding configuration for resource "%s"', data.table)
+    )
+
+    // Add role to manage Auto Scaling policies
+    resources.push(new Role(data.table))
+
+    // Only add Auto Scaling for read capacity if configuration set is available
+    if (config.read) {
+      resources.push(
+        new Policy(data.table, data.read.usage, true, 60, 60),
+        new Target(data.table, data.read.minimum, data.read.maximum, true)
+      )
+    }
+
+    // Only add Auto Scaling for write capacity if configuration set is available
+    if (config.write) {
+      resources.push(
+        new Policy(data.table, data.write.usage, false, 60, 60),
+        new Target(data.table, data.write.minimum, data.write.maximum, false)
+      )
+    }
+  }
+
   process () {
     this.serverless.service.custom.capacities.map(
       config => {
@@ -60,33 +88,7 @@ class Plugin {
         }
 
         tables.forEach(table => {
-          // Fill configuration with defaults for missing values
-          const data = this.defaults(table, config)
-          const resources = []
-
-          // Start processing configuration
-          this.serverless.cli.log(
-            util.format(' - Adding configuration for resource "%s"', data.table)
-          )
-
-          // Add role to manage Auto Scaling policies
-          resources.push(new Role(data.table))
-
-          // Only add Auto Scaling for read capacity if configuration set is available
-          if (config.read) {
-            resources.push(
-              new Policy(data.table, data.read.usage, true, 60, 60),
-              new Target(data.table, data.read.minimum, data.read.maximum, true)
-            )
-          }
-
-          // Only add Auto Scaling for write capacity if configuration set is available
-          if (config.write) {
-            resources.push(
-              new Policy(data.table, data.write.usage, false, 60, 60),
-              new Target(data.table, data.write.minimum, data.write.maximum, false)
-            )
-          }
+          const resources = this.resources(table, config)
 
           // Inject templates in serverless CloudFormation template
           resources.forEach(
