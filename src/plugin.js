@@ -1,5 +1,3 @@
-'use strict'
-
 const _ = require('lodash')
 const util = require('util')
 const assert = require('assert')
@@ -9,24 +7,40 @@ const Target = require('./aws/target')
 const Policy = require('./aws/policy')
 
 class Plugin {
-  constructor (serverless, options) {
+  /**
+   * Constructur
+   * 
+   * @param {object} serverless 
+   */
+  constructor (serverless) {
     this.serverless = serverless
     this.hooks = {
       'deploy:compileEvents': this.beforeDeployResources.bind(this)
     }
   }
 
+  /**
+   * Validate the request and check if configuration is available
+   */
   validate () {
     assert(this.serverless, 'Invalid serverless configuration')
     assert(this.serverless.service, 'Invalid serverless configuration')
     assert(this.serverless.service.provider, 'Invalid serverless configuration')
     assert(this.serverless.service.provider.name, 'Invalid serverless configuration')
     assert(this.serverless.service.provider.name === 'aws', 'Only supported for AWS provider')
+
+    assert(this.serverless.service.custom, 'Not Auto Scaling configuration found')
+    assert(this.serverless.service.custom.capacities, 'Not Auto Scaling configuration found')
   }
 
-  defaults (table, config) {
+  /**
+   * Parse configuration and fill up with default values when needed
+   * 
+   * @param {object} config 
+   * @return {object}
+   */
+  defaults (config) {
     return {
-      table: table,
       read: {
         usage: config.read && config.read.usage ? config.read.usage : 0.75,
         minimum: config.read && config.read.minimum ? config.read.minimum : 5,
@@ -40,66 +54,100 @@ class Plugin {
     }
   }
 
-  resources (table, config, index, lastRessources) {
-    const data = this.defaults(table, config)
+  /**
+   * Create CloudFormation resources for table (and optional index)
+   * 
+   * @param {string} table 
+   * @param {string} index 
+   * @param {object} config 
+   */
+  resources (table, index, config) {
     const resources = []
-    const indexes = []
+    const data = this.defaults(config)
+    
+    // Start processing configuration
+    this.serverless.cli.log(
+      util.format(' - Building configuration for resource "table/%s%s"', table, (index ? ('/index/' + index) : ''))
+    )
 
-    if (!config.indexOnly) {
-      indexes.push(null) // Horrible solution
-    }
+    // Add role to manage Auto Scaling policies
+    resources.push(new Role(table, index))
 
-    if (index) {
-      if (index.constructor !== Array) {
-        indexes.push(index)
-      } else {
-        index.forEach(index => indexes.push(index))
-      }
-    }
-
-    indexes.forEach(index => {
-      // Start processing configuration
-      this.serverless.cli.log(
-        util.format(' - Building configuration for resource "%s%s"', data.table, (index ? ('/index/' + index) : ''))
+    // Only add Auto Scaling for read capacity if configuration set is available
+    if (config.read) {
+      resources.push(
+        // ScaleIn/ScaleOut values are fix to 60% usage
+        new Policy(table, data.read.usage, true, 60, 60, index),
+        new Target(table, data.read.minimum, data.read.maximum, true, index)
       )
+    }
 
-      // Add role to manage Auto Scaling policies
-      resources.push(new Role(data.table, index))
+    // Only add Auto Scaling for write capacity if configuration set is available
+    if (config.write) {
+      resources.push(
+        // ScaleIn/ScaleOut values are fix to 60% usage
+        new Policy(table, data.write.usage, false, 60, 60, index),
+        new Target(table, data.write.minimum, data.write.maximum, false, index)
+      )
+    }
 
-      // Only add Auto Scaling for read capacity if configuration set is available
-      if (config.read) {
-        resources.push(
-          new Policy(data.table, data.read.usage, true, 60, 60, index),
-          new Target(data.table, data.read.minimum, data.read.maximum, true, index)
-        )
-      }
-
-      // Only add Auto Scaling for write capacity if configuration set is available
-      if (config.write) {
-        resources.push(
-          new Policy(data.table, data.write.usage, false, 60, 60, index),
-          new Target(data.table, data.write.minimum, data.write.maximum, false, index)
-        )
-      }
-    })
-
-    const deps = lastRessources.map(
-      item => Object.keys(item.toJSON()).pop()
-    )
-
-    return resources.map(
-      resource => {
-        resource.setDependencies(deps)
-
-        return resource
-      }
-    )
+    return resources
   }
 
+  /**
+   * Generate CloudFormation resources for DynamoDB table and indexes
+   * 
+   * @param {string} table 
+   * @param {obejct} config 
+   */
+  generate (table, config) {
+    let resources = []
+    let lastRessources = []
+
+    const indexes = this.normalize(config.index)
+    if (!config.indexOnly) {
+      indexes.unshift(null) // Horrible solution
+    }
+
+    indexes.forEach(
+      index => {
+        const current = this.resources(table, index, config).map(
+          resource => resource.setDependencies(lastRessources).toJSON()
+        )
+
+        resources = resources.concat(current)
+        lastRessources = current.map(item => Object.keys(item).pop())
+      }
+    )
+
+    return resources
+  }
+
+  /**
+   * Check if parameter is defined and return as array if only a string is provided
+   * 
+   * @param {stirng|array} data 
+   * @return {array}
+   */
+  normalize (data) {
+    if (!data) {
+      return []
+    }
+
+    if (data.constructor !== Array) {
+      return [data]
+    }
+    
+    return data.slice(0)
+  }
+
+  /**
+   * Process the provided configuration
+   * 
+   * @return {Promise}
+   */
   process () {
     if (this.serverless.service.custom) {
-      let lastRessources = []
-
       this.serverless.service.custom.capacities.forEach(
         config => {
           // Skip set if no read or write scaling configuration is available
@@ -109,26 +157,15 @@ class Plugin {
             )
           }
 
-          const tables = []
-          if (config.table.constructor !== Array) {
-            tables.push(config.table)
-          } else {
-            config.table.forEach(table => tables.push(table))
-          }
-
-          tables.forEach(table => {
-            const resources = this.resources(table, config, config.index, lastRessources)
-
-            // Inject templates in serverless CloudFormation template
-            resources.forEach(
+          // Walk every table in configuration
+          this.normalize(config.table).forEach(
+            table => this.generate(table, config).forEach(
               resource => _.merge(
                 this.serverless.service.provider.compiledCloudFormationTemplate.Resources,
-                resource.toJSON()
+                resource
               )
             )
-
-            lastRessources = resources
-          })
+          )
         }
       )
     }

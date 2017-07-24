@@ -9,6 +9,8 @@ class Role {
 
   setDependencies (list) {
     this.dependencies = list
+
+    return this
   }
 
   toJSON () {

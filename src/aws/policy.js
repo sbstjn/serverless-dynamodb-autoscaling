@@ -13,6 +13,8 @@ class Policy {
 
   setDependencies (list) {
     this.dependencies = list
+
+    return this
   }
 
   toJSON () {
