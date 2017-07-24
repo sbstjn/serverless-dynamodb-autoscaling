@@ -4,6 +4,11 @@ class Role {
   constructor (table, index) {
     this.table = table
     this.index = index
+    this.dependencies = []
+  }
+
+  setDependencies(list) {
+    this.dependencies = list
   }
 
   toJSON () {
@@ -12,7 +17,7 @@ class Role {
         'Type': 'AWS::IAM::Role',
         'DependsOn': [
           this.table
-        ],
+        ].concat(this.dependencies),
         'Properties': {
           'RoleName': names.role(this.table, this.index),
           'AssumeRolePolicyDocument': {

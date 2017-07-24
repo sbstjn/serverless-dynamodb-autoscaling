@@ -8,6 +8,11 @@ class Policy {
     this.read = !!read
     this.scaleIn = parseInt(scaleIn, 10)
     this.scaleOut = parseInt(scaleOut, 10)
+    this.dependencies = []
+  }
+
+  setDependencies(list) {
+    this.dependencies = list
   }
 
   toJSON () {
@@ -17,7 +22,7 @@ class Policy {
         'DependsOn': [
           this.table,
           names.target(this.table, this.read, this.index)
-        ],
+        ].concat(this.dependencies),
         'Properties': {
           'PolicyName': names.policyScale(this.table, this.read, this.index),
           'PolicyType': 'TargetTrackingScaling',

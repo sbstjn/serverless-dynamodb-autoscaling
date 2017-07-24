@@ -7,6 +7,11 @@ class Target {
     this.min = parseInt(min, 10)
     this.max = parseInt(max, 10)
     this.read = !!read
+    this.dependencies = []
+  }
+
+  setDependencies(list) {
+    this.dependencies = list 
   }
 
   toJSON () {
@@ -22,7 +27,7 @@ class Target {
         'DependsOn': [
           this.table,
           names.role(this.table, this.index)
-        ],
+        ].concat(this.dependencies),
         'Properties': {
           'MaxCapacity': this.max,
           'MinCapacity': this.min,

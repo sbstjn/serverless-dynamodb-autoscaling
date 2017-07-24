@@ -22,8 +22,6 @@ class Plugin {
     assert(this.serverless.service.provider, 'Invalid serverless configuration')
     assert(this.serverless.service.provider.name, 'Invalid serverless configuration')
     assert(this.serverless.service.provider.name === 'aws', 'Only supported for AWS provider')
-
-    assert(this.serverless.service.custom.capacities, 'No Auto Scaling configuration found')
   }
 
   defaults (table, config) {
@@ -42,7 +40,7 @@ class Plugin {
     }
   }
 
-  resources (table, config, index) {
+  resources (table, config, index, lastRessources) {
     const data = this.defaults(table, config)
     const resources = []
     const indexes = []
@@ -85,39 +83,56 @@ class Plugin {
       }
     })
 
-    return resources
+    const deps = lastRessources.map(
+      item => Object.keys(item.toJSON()).pop()
+    )
+
+
+    return resources.map(
+      resource => {
+        resource.setDependencies(deps)
+
+        return resource
+      }
+    )
   }
 
   process () {
-    this.serverless.service.custom.capacities.map(
-      config => {
-        // Skip set if no read or write scaling configuration is available
-        if (!config.read && !config.write) {
-          return this.serverless.cli.log(
-            util.format(' - Skipping configuration for resource "%s"', config.table)
-          )
-        }
+    if (this.serverless.service.custom) {
+      let lastRessources = []
 
-        const tables = []
-        if (config.table.constructor !== Array) {
-          tables.push(config.table)
-        } else {
-          config.table.forEach(table => tables.push(table))
-        }
-
-        tables.forEach(table => {
-          const resources = this.resources(table, config, config.index)
-
-          // Inject templates in serverless CloudFormation template
-          resources.forEach(
-            resource => _.merge(
-              this.serverless.service.provider.compiledCloudFormationTemplate.Resources,
-              resource.toJSON()
+      this.serverless.service.custom.capacities.forEach(
+        config => {
+          // Skip set if no read or write scaling configuration is available
+          if (!config.read && !config.write) {
+            return this.serverless.cli.log(
+              util.format(' - Skipping configuration for resource "%s"', config.table)
             )
-          )
-        })
-      }
-    )
+          }
+
+          const tables = []
+          if (config.table.constructor !== Array) {
+            tables.push(config.table)
+          } else {
+            config.table.forEach(table => tables.push(table))
+          }
+
+          tables.forEach(table => {
+            const resources = this.resources(table, config, config.index, lastRessources)
+            
+            // Inject templates in serverless CloudFormation template
+            resources.forEach(
+              resource => _.merge(
+                this.serverless.service.provider.compiledCloudFormationTemplate.Resources,
+                resource.toJSON()
+              )
+            )
+
+            lastRessources = resources
+          })
+        }
+      )
+    }
 
     return Promise.resolve()
   }
@@ -135,11 +150,11 @@ class Plugin {
       () => this.serverless.cli.log(
         util.format('Added DynamoDB Auto Scaling to CloudFormation!')
       )
-    )/* .catch(
+    ).catch(
       err => this.serverless.cli.log(
         util.format('Skipping DynamoDB Auto Scaling: %s!', err.message)
-      ) && console.log(err)
-    ) */
+      )
+    )
   }
 }
 
