@@ -84,6 +84,15 @@ resources:
               WriteCapacityUnits: 5
 ```
 
+## API Throtteling
+
+CloudWatch has very strict [API rate limitations](http://docs.aws.amazon.com/AmazonCloudWatch/latest/monitoring/cloudwatch_limits.html)! If you plan to configure Auto Scaling for multiple DynamoDB tables or *Global Secondary Index*, mare sure to request an increase of the rate limits first! Otherwise you might run into an error like this:
+
+```
+An error occurred while provisioning your stack: XYZ - Unable to create alarms for scaling policy XYZ due to reason: 
+Rate exceeded (Service: AmazonCloudWatch; Status Code: 400; Error Code: Throttling; Request ID: XYZ).
+```
+
 ## License
 
 Feel free to use the code, it's released using the [MIT license](LICENSE.md).
