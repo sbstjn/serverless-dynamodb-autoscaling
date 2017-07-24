@@ -87,7 +87,6 @@ class Plugin {
       item => Object.keys(item.toJSON()).pop()
     )
 
-
     return resources.map(
       resource => {
         resource.setDependencies(deps)
@@ -119,7 +118,7 @@ class Plugin {
 
           tables.forEach(table => {
             const resources = this.resources(table, config, config.index, lastRessources)
-            
+
             // Inject templates in serverless CloudFormation template
             resources.forEach(
               resource => _.merge(

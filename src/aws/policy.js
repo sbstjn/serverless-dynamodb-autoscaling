@@ -11,7 +11,7 @@ class Policy {
     this.dependencies = []
   }
 
-  setDependencies(list) {
+  setDependencies (list) {
     this.dependencies = list
   }
 

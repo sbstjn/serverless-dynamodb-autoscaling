@@ -10,8 +10,8 @@ class Target {
     this.dependencies = []
   }
 
-  setDependencies(list) {
-    this.dependencies = list 
+  setDependencies (list) {
+    this.dependencies = list
   }
 
   toJSON () {
