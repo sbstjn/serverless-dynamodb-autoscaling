@@ -15,6 +15,10 @@ describe('Names', () => {
     expect(names.role('test-with-invalid-characters')).toBe('DynamoDBAutoscaleRoletestwithinvalidcharacters')
   })
 
+  it('creates name for Role with index and stage', () => {
+    expect(names.role('test-with-invalid-characters', 'index', 'stage')).toBe('DynamoDBAutoscaleRoletestwithinvalidcharactersindexstage')
+  })
+
   it('creates name for Metric (read)', () => {
     expect(names.metric(true)).toBe('DynamoDBReadCapacityUtilization')
   })

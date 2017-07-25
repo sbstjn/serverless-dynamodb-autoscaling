@@ -1,6 +1,6 @@
 {
   "name": "serverless-dynamodb-autoscaling",
-  "description": "Serverless Plugin for Amazon DynamoDB Auto Scaling configuration.",
+  "description": "Serverless Plugin for Amazon DynamoDB Auto Scaling.",
   "version": "0.0.0",
   "main": "src/plugin.js",
   "scripts": {

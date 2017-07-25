@@ -1,19 +1,26 @@
 const names = require('./names')
 
 class Role {
-  constructor (table) {
+  constructor (table, index, stage) {
     this.table = table
+    this.index = index
+    this.stage = stage
+    this.dependencies = []
+  }
+
+  setDependencies (list) {
+    this.dependencies = list
+
+    return this
   }
 
   toJSON () {
     return {
-      [names.role(this.table)]: {
+      [names.role(this.table, this.index, this.stage)]: {
         'Type': 'AWS::IAM::Role',
-        'DependsOn': [
-          this.table
-        ],
+        'DependsOn': [ this.table ].concat(this.dependencies),
         'Properties': {
-          'RoleName': names.role(this.table),
+          'RoleName': names.role(this.table, this.index, this.stage),
           'AssumeRolePolicyDocument': {
             'Version': '2012-10-17',
             'Statement': [
@@ -28,7 +35,7 @@ class Role {
           },
           'Policies': [
             {
-              'PolicyName': names.policyRole(this.table),
+              'PolicyName': names.policyRole(this.table, this.index, this.stage),
               'PolicyDocument': {
                 'Version': '2012-10-17',
                 'Statement': [
