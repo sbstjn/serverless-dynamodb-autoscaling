@@ -5,7 +5,7 @@
 [![license](https://img.shields.io/github/license/sbstjn/serverless-dynamodb-autoscaling.svg)](https://github.com/sbstjn/serverless-dynamodb-autoscaling/blob/master/LICENSE.md)
 [![Coveralls](https://img.shields.io/coveralls/sbstjn/serverless-dynamodb-autoscaling.svg)](https://coveralls.io/github/sbstjn/serverless-dynamodb-autoscaling)
 
-With this plugin for [serverless](https://serverless.com) you can enable DynamoDB Auto Scaling for tables and *Global Secondary Indexes* easily in your `serverless.yml` configuration file. The plugin supports multiple tables, indexes, as well separate configuration sets for `read` and `write` capacities using Amazon's [native DynamoDB Auto Scaling](https://aws.amazon.com/blogs/aws/new-auto-scaling-for-amazon-dynamodb/).
+With this plugin for [serverless](https://serverless.com) you can enable DynamoDB Auto Scaling for tables and *Global Secondary Indexes* easily in your `serverless.yml` configuration file. The plugin supports multiple tables and indexes, as well separate configuration sets for `read` and `write` capacities using Amazon's [native DynamoDB Auto Scaling](https://aws.amazon.com/blogs/aws/new-auto-scaling-for-amazon-dynamodb/).
 
 ## Usage
 
@@ -48,7 +48,15 @@ custom:
 
 That's it! With the next deployment serverless will add a CloudFormation configuration to enable Auto Scaling for the DynamoDB resources `CustomTable` and its **Global Secondary Index** called `custom-index-name`. 
 
-You must of course provide at least a configuration for `read` or `write` to enable Auto Scaling. The value for `usage` has a default of 75 percent.
+You must of course provide at least a configuration for `read` or `write` to enable Auto Scaling!
+
+### Defaults
+
+```yaml
+usage: 0.75
+minimum: 5
+maximum: 200
+```
 
 ### Index
 
