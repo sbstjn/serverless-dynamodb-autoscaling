@@ -1,6 +1,8 @@
 const util = require('util')
 
-const clean = (input) => input.replace(/[^a-z0-9+]+/gi, '')
+function clean (input) {
+  return input.replace(/[^a-z0-9+]+/gi, '')
+}
 
 function policyScale (table, read, index, stage) {
   return clean(
