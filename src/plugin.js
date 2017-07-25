@@ -17,8 +17,6 @@ class Plugin {
     this.hooks = {
       'deploy:compileEvents': this.beforeDeployResources.bind(this)
     }
-
-    console.log()
   }
 
   /**

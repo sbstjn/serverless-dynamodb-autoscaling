@@ -5,9 +5,10 @@ const clean = (input) => input.replace(/[^a-z0-9+]+/gi, '')
 function policyScale (table, read, index, stage) {
   return clean(
     util.format(
-      'Table%sScalingPolicy-%s%s', read ? 'Read' : 'Write',
+      'Table%sScalingPolicy-%s%s%s', read ? 'Read' : 'Write',
       table,
-      index || ''
+      index || '',
+      stage || ''
     )
   )
 }
@@ -15,14 +16,15 @@ function policyScale (table, read, index, stage) {
 function policyRole (table, index, stage) {
   return clean(
     util.format(
-      'DynamoDBAutoscalePolicy-%s%s',
+      'DynamoDBAutoscalePolicy-%s%s%s',
       table,
-      index || ''
+      index || '',
+      stage || ''
     )
   )
 }
 
-function dimension (read, index, stage) {
+function dimension (read, index) {
   return util.format(
     'dynamodb:%s:%sCapacityUnits',
     index ? 'index' : 'table',
@@ -33,10 +35,11 @@ function dimension (read, index, stage) {
 function target (table, read, index, stage) {
   return clean(
     util.format(
-      'AutoScalingTarget%s-%s%s',
+      'AutoScalingTarget%s-%s%s%s',
       read ? 'Read' : 'Write',
       table,
-      index || ''
+      index || '',
+      stage || ''
     )
   )
 }
@@ -53,9 +56,10 @@ function metric (read) {
 function role (table, index, stage) {
   return clean(
     util.format(
-      'DynamoDBAutoscaleRole-%s%s',
+      'DynamoDBAutoscaleRole-%s%s%s',
       table,
-      index || ''
+      index || '',
+      stage || ''
     )
   )
 }

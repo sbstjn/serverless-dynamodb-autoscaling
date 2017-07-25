@@ -36,7 +36,7 @@ class Target {
           'MinCapacity': this.min,
           'ResourceId': { 'Fn::Join': [ '', resource ] },
           'RoleARN': { 'Fn::GetAtt': [ names.role(this.table, this.index, this.stage), 'Arn' ] },
-          'ScalableDimension': names.dimension(this.read, this.index, this.stage),
+          'ScalableDimension': names.dimension(this.read, this.index),
           'ServiceNamespace': 'dynamodb'
         }
       }
