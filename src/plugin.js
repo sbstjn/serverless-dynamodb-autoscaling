@@ -152,28 +152,18 @@ class Plugin {
    * @return {Promise}
    */
   process () {
-    if (this.serverless.service.custom) {
-      this.serverless.service.custom.capacities.forEach(
-        config => {
-          // Skip set if no read or write scaling configuration is available
-          if (!config.read && !config.write) {
-            return this.serverless.cli.log(
-              util.format(' - Skipping configuration for resource "%s"', config.table)
-            )
-          }
-
-          // Walk every table in configuration
-          this.normalize(config.table).forEach(
-            table => this.generate(table, config).forEach(
-              resource => _.merge(
-                this.serverless.service.provider.compiledCloudFormationTemplate.Resources,
-                resource
-              )
-            )
+    this.serverless.service.custom.capacities.filter(
+      config => !!config.read || !!config.write
+    ).forEach(
+      config => this.normalize(config.table).forEach(
+        table => this.generate(table, config).forEach(
+          resource => _.merge(
+            this.serverless.service.provider.compiledCloudFormationTemplate.Resources,
+            resource
           )
-        }
+        )
       )
-    }
+    )
   }
 
   beforeDeployResources () {
