@@ -17,6 +17,8 @@ class Plugin {
     this.hooks = {
       'deploy:compileEvents': this.beforeDeployResources.bind(this)
     }
+
+    console.log()
   }
 
   /**
@@ -28,6 +30,8 @@ class Plugin {
     assert(this.serverless.service.provider, 'Invalid serverless configuration')
     assert(this.serverless.service.provider.name, 'Invalid serverless configuration')
     assert(this.serverless.service.provider.name === 'aws', 'Only supported for AWS provider')
+
+    assert(this.serverless.service.provider.stage, 'Invalid serverless configuration')
 
     assert(this.serverless.service.custom, 'Not Auto Scaling configuration found')
     assert(this.serverless.service.custom.capacities, 'Not Auto Scaling configuration found')
@@ -63,6 +67,7 @@ class Plugin {
    */
   resources (table, index, config) {
     const resources = []
+    const stage = this.serverless.service.provider.stage
     const data = this.defaults(config)
 
     // Start processing configuration
@@ -71,14 +76,14 @@ class Plugin {
     )
 
     // Add role to manage Auto Scaling policies
-    resources.push(new Role(table, index))
+    resources.push(new Role(table, index, stage))
 
     // Only add Auto Scaling for read capacity if configuration set is available
     if (config.read) {
       resources.push(
         // ScaleIn/ScaleOut values are fix to 60% usage
-        new Policy(table, data.read.usage, true, 60, 60, index),
-        new Target(table, data.read.minimum, data.read.maximum, true, index)
+        new Policy(table, data.read.usage, true, 60, 60, index, stage),
+        new Target(table, data.read.minimum, data.read.maximum, true, index, stage)
       )
     }
 
@@ -86,8 +91,8 @@ class Plugin {
     if (config.write) {
       resources.push(
         // ScaleIn/ScaleOut values are fix to 60% usage
-        new Policy(table, data.write.usage, false, 60, 60, index),
-        new Target(table, data.write.minimum, data.write.maximum, false, index)
+        new Policy(table, data.write.usage, false, 60, 60, index, stage),
+        new Target(table, data.write.minimum, data.write.maximum, false, index, stage)
       )
     }
 
