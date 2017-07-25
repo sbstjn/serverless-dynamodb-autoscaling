@@ -1,9 +1,10 @@
 const names = require('./names')
 
 class Target {
-  constructor (table, min, max, read, index) {
+  constructor (table, min, max, read, index, stage) {
     this.table = table
     this.index = index
+    this.stage = stage
     this.min = parseInt(min, 10)
     this.max = parseInt(max, 10)
     this.read = !!read
@@ -24,18 +25,18 @@ class Target {
     }
 
     return {
-      [names.target(this.table, this.read, this.index)]: {
+      [names.target(this.table, this.read, this.index, this.stage)]: {
         'Type': 'AWS::ApplicationAutoScaling::ScalableTarget',
         'DependsOn': [
           this.table,
-          names.role(this.table, this.index)
+          names.role(this.table, this.index, this.stage)
         ].concat(this.dependencies),
         'Properties': {
           'MaxCapacity': this.max,
           'MinCapacity': this.min,
           'ResourceId': { 'Fn::Join': [ '', resource ] },
-          'RoleARN': { 'Fn::GetAtt': [ names.role(this.table, this.index), 'Arn' ] },
-          'ScalableDimension': names.dimension(this.read, this.index),
+          'RoleARN': { 'Fn::GetAtt': [ names.role(this.table, this.index, this.stage), 'Arn' ] },
+          'ScalableDimension': names.dimension(this.read, this.index, this.stage),
           'ServiceNamespace': 'dynamodb'
         }
       }

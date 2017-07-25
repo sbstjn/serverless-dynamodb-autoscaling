@@ -2,7 +2,7 @@ const util = require('util')
 
 const clean = (input) => input.replace(/[^a-z0-9+]+/gi, '')
 
-function policyScale (table, read, index) {
+function policyScale (table, read, index, stage) {
   return clean(
     util.format(
       'Table%sScalingPolicy-%s%s', read ? 'Read' : 'Write',
@@ -12,7 +12,7 @@ function policyScale (table, read, index) {
   )
 }
 
-function policyRole (table, index) {
+function policyRole (table, index, stage) {
   return clean(
     util.format(
       'DynamoDBAutoscalePolicy-%s%s',
@@ -22,7 +22,7 @@ function policyRole (table, index) {
   )
 }
 
-function dimension (read, index) {
+function dimension (read, index, stage) {
   return util.format(
     'dynamodb:%s:%sCapacityUnits',
     index ? 'index' : 'table',
@@ -30,7 +30,7 @@ function dimension (read, index) {
   )
 }
 
-function target (table, read, index) {
+function target (table, read, index, stage) {
   return clean(
     util.format(
       'AutoScalingTarget%s-%s%s',
@@ -50,7 +50,7 @@ function metric (read) {
   )
 }
 
-function role (table, index) {
+function role (table, index, stage) {
   return clean(
     util.format(
       'DynamoDBAutoscaleRole-%s%s',

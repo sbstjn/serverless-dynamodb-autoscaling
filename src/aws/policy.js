@@ -1,9 +1,10 @@
 const names = require('./names')
 
 class Policy {
-  constructor (table, value, read, scaleIn, scaleOut, index) {
+  constructor (table, value, read, scaleIn, scaleOut, index, stage) {
     this.table = table
     this.index = index
+    this.stage = stage
     this.value = parseFloat(value, 10) * 100
     this.read = !!read
     this.scaleIn = parseInt(scaleIn, 10)
@@ -19,16 +20,16 @@ class Policy {
 
   toJSON () {
     return {
-      [names.policyScale(this.table, this.read, this.index)]: {
+      [names.policyScale(this.table, this.read, this.index, this.stage)]: {
         'Type': 'AWS::ApplicationAutoScaling::ScalingPolicy',
         'DependsOn': [
           this.table,
-          names.target(this.table, this.read, this.index)
+          names.target(this.table, this.read, this.index, this.stage)
         ].concat(this.dependencies),
         'Properties': {
-          'PolicyName': names.policyScale(this.table, this.read, this.index),
+          'PolicyName': names.policyScale(this.table, this.read, this.index, this.stage),
           'PolicyType': 'TargetTrackingScaling',
-          'ScalingTargetId': { 'Ref': names.target(this.table, this.read, this.index) },
+          'ScalingTargetId': { 'Ref': names.target(this.table, this.read, this.index, this.stage) },
           'TargetTrackingScalingPolicyConfiguration': {
             'PredefinedMetricSpecification': {
               'PredefinedMetricType': names.metric(this.read)
