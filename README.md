@@ -5,7 +5,7 @@
 [![license](https://img.shields.io/github/license/sbstjn/serverless-dynamodb-autoscaling.svg)](https://github.com/sbstjn/serverless-dynamodb-autoscaling/blob/master/LICENSE.md)
 [![Coveralls](https://img.shields.io/coveralls/sbstjn/serverless-dynamodb-autoscaling.svg)](https://coveralls.io/github/sbstjn/serverless-dynamodb-autoscaling)
 
-With this plugin for [serverless](https://serverless.com) you can set DynamoDB Auto Scaling configuratin in your `serverless.yml` file. The plugin supports multiple tables and separate configuration sets for `read` and `write` capacities using AWS [native DynamoDB Auto Scaling](https://aws.amazon.com/blogs/aws/new-auto-scaling-for-amazon-dynamodb/). Besides general Auto Scaling for DynamoDB tables, you can easily configure Auto Scaling for *Global Secondary Indexes* as well!
+With this plugin for [serverless](https://serverless.com) you can enable DynamoDB Auto Scaling for tables and *Global Secondary Indexes* easily in your `serverless.yml` configuration file. The plugin supports multiple tables, indexes, as well separate configuration sets for `read` and `write` capacities using Amazon's [native DynamoDB Auto Scaling](https://aws.amazon.com/blogs/aws/new-auto-scaling-for-amazon-dynamodb/).
 
 ## Usage
 
@@ -16,7 +16,7 @@ Add the [NPM package](https://www.npmjs.com/package/serverless-dynamodb-autoscal
 $ yarn add serverless-dynamodb-autoscaling
 
 # Via npm
-$ npm install serverless-dynamodb-autoscaling --save-dev
+$ npm install serverless-dynamodb-autoscaling
 ```
 
 ## Configuration
@@ -28,7 +28,7 @@ plugins:
   - serverless-dynamodb-autoscaling
 ```
 
-Configure DynamoDB Auto Scaling in `serverless.yml` with references to your DynamoDB CloudFormation resources for the `table` property:
+Configure DynamoDB Auto Scaling in `serverless.yml` with references to your DynamoDB CloudFormation resources for the `table` property. The `index` configuration is optional.
 
 ```yaml
 custom:
@@ -46,15 +46,26 @@ custom:
         usage: 0.5        # Targeted usage percentage
 ```
 
-That's it! With the next deployment (`sls deploy`) serverless will add a CloudFormation configuration to enable Auto Scaling for the DynamoDB resources `CustomTable` and its **Global Secondary Index** called `custom-index-name`. If you only want to enable Auto Scaling for the index, use `indexOnly: true` to skip Auto Scaling for the general DynamoDB table.
+That's it! With the next deployment serverless will add a CloudFormation configuration to enable Auto Scaling for the DynamoDB resources `CustomTable` and its **Global Secondary Index** called `custom-index-name`. 
 
 You must of course provide at least a configuration for `read` or `write` to enable Auto Scaling. The value for `usage` has a default of 75 percent.
 
-**Notice:** *With the relese of `v0.2.x` the plugin introduced a breaking change. Starting with `v0.2.0` you need to provide the CloudFormation reference for the `table` property. In `v0.1.x` the plugin used a `name` property with the DynamoDB table name.*
+### Index
+
+If you only want to enable Auto Scaling for the index, use `indexOnly: true` to skip Auto Scaling for the general DynamoDB table.
+
+### API Throtteling
+
+CloudWatch has very strict [API rate limitations](http://docs.aws.amazon.com/AmazonCloudWatch/latest/monitoring/cloudwatch_limits.html)! If you plan to configure Auto Scaling for multiple DynamoDB tables or *Global Secondary Index*, request an increase of the rate limits first! Otherwise you might run into an error like this:
+
+```
+An error occurred while provisioning your stack: XYZ - Unable to create alarms for scaling policy XYZ due to reason: 
+Rate exceeded (Service: AmazonCloudWatch; Status Code: 400; Error Code: Throttling; Request ID: XYZ).
+```
 
 ## DynamoDB
 
-The configuration above works fine for a default DynamoDB table configuration.
+The example configuration above works fine for a DynamoDB table configuration like this:
 
 ```yaml
 resources:
@@ -82,15 +93,6 @@ resources:
             ProvisionedThroughput:
               ReadCapacityUnits: 5
               WriteCapacityUnits: 5
-```
-
-## API Throtteling
-
-CloudWatch has very strict [API rate limitations](http://docs.aws.amazon.com/AmazonCloudWatch/latest/monitoring/cloudwatch_limits.html)! If you plan to configure Auto Scaling for multiple DynamoDB tables or *Global Secondary Index*, mare sure to request an increase of the rate limits first! Otherwise you might run into an error like this:
-
-```
-An error occurred while provisioning your stack: XYZ - Unable to create alarms for scaling policy XYZ due to reason: 
-Rate exceeded (Service: AmazonCloudWatch; Status Code: 400; Error Code: Throttling; Request ID: XYZ).
 ```
 
 ## License
