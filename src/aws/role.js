@@ -18,9 +18,7 @@ class Role {
     return {
       [names.role(this.table, this.index, this.stage)]: {
         'Type': 'AWS::IAM::Role',
-        'DependsOn': [
-          this.table
-        ].concat(this.dependencies),
+        'DependsOn': [ this.table ].concat(this.dependencies),
         'Properties': {
           'RoleName': names.role(this.table, this.index, this.stage),
           'AssumeRolePolicyDocument': {

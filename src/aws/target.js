@@ -27,10 +27,7 @@ class Target {
     return {
       [names.target(this.table, this.read, this.index, this.stage)]: {
         'Type': 'AWS::ApplicationAutoScaling::ScalableTarget',
-        'DependsOn': [
-          this.table,
-          names.role(this.table, this.index, this.stage)
-        ].concat(this.dependencies),
+        'DependsOn': [ this.table, names.role(this.table, this.index, this.stage) ].concat(this.dependencies),
         'Properties': {
           'MaxCapacity': this.max,
           'MinCapacity': this.min,
