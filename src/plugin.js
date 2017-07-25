@@ -9,8 +9,8 @@ const Policy = require('./aws/policy')
 class Plugin {
   /**
    * Constructur
-   * 
-   * @param {object} serverless 
+   *
+   * @param {object} serverless
    */
   constructor (serverless) {
     this.serverless = serverless
@@ -35,8 +35,8 @@ class Plugin {
 
   /**
    * Parse configuration and fill up with default values when needed
-   * 
-   * @param {object} config 
+   *
+   * @param {object} config
    * @return {object}
    */
   defaults (config) {
@@ -56,15 +56,15 @@ class Plugin {
 
   /**
    * Create CloudFormation resources for table (and optional index)
-   * 
-   * @param {string} table 
-   * @param {string} index 
-   * @param {object} config 
+   *
+   * @param {string} table
+   * @param {string} index
+   * @param {object} config
    */
   resources (table, index, config) {
     const resources = []
     const data = this.defaults(config)
-    
+
     // Start processing configuration
     this.serverless.cli.log(
       util.format(' - Building configuration for resource "table/%s%s"', table, (index ? ('/index/' + index) : ''))
@@ -96,9 +96,9 @@ class Plugin {
 
   /**
    * Generate CloudFormation resources for DynamoDB table and indexes
-   * 
-   * @param {string} table 
-   * @param {obejct} config 
+   *
+   * @param {string} table
+   * @param {obejct} config
    */
   generate (table, config) {
     let resources = []
@@ -125,8 +125,8 @@ class Plugin {
 
   /**
    * Check if parameter is defined and return as array if only a string is provided
-   * 
-   * @param {stirng|array} data 
+   *
+   * @param {stirng|array} data
    * @return {array}
    */
   normalize (data) {
@@ -137,13 +137,13 @@ class Plugin {
     if (data.constructor !== Array) {
       return [data]
     }
-    
+
     return data.slice(0)
   }
 
   /**
    * Process the provided configuration
-   * 
+   *
    * @return {Promise}
    */
   process () {

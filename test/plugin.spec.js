@@ -5,7 +5,7 @@ const Plugin = require('../')
 describe('Normalize', () => {
   it('converts everything to an array', () => {
     const test = new Plugin()
-    
+
     expect(test.normalize('test')).toEqual(['test'])
     expect(test.normalize(['test'])).toEqual(['test'])
     expect(test.normalize(['test', 'foo'])).toEqual(['test', 'foo'])
@@ -15,7 +15,7 @@ describe('Normalize', () => {
 
 describe('Defaults', () => {
   it('creates object with defaults', () => {
-    let config = { 
+    let config = {
       read: { maximum: 100, usage: 1 },
       write: { minimum: 20 }
     }
