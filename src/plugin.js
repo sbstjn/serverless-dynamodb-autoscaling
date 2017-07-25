@@ -6,6 +6,12 @@ const Role = require('./aws/role')
 const Target = require('./aws/target')
 const Policy = require('./aws/policy')
 
+const text = {
+  INVALID_CONFIGURATION: 'Invalid serverless configuration',
+  ONLY_AWS_SUPPORT: 'Only supported for AWS provicer',
+  NO_AUTOSCALING_CONFIG: 'Not Auto Scaling configuration found'
+}
+
 class Plugin {
   /**
    * Constructur
@@ -23,16 +29,16 @@ class Plugin {
    * Validate the request and check if configuration is available
    */
   validate () {
-    assert(this.serverless, 'Invalid serverless configuration')
-    assert(this.serverless.service, 'Invalid serverless configuration')
-    assert(this.serverless.service.provider, 'Invalid serverless configuration')
-    assert(this.serverless.service.provider.name, 'Invalid serverless configuration')
-    assert(this.serverless.service.provider.name === 'aws', 'Only supported for AWS provider')
+    assert(this.serverless, text.INVALID_CONFIGURATION)
+    assert(this.serverless.service, text.INVALID_CONFIGURATION)
+    assert(this.serverless.service.provider, text.INVALID_CONFIGURATION)
+    assert(this.serverless.service.provider.name, text.INVALID_CONFIGURATION)
+    assert(this.serverless.service.provider.name === 'aws', text.ONLY_AWS_SUPPORT)
 
-    assert(this.serverless.service.provider.stage, 'Invalid serverless configuration')
+    assert(this.serverless.service.provider.stage, text.INVALID_CONFIGURATION)
 
-    assert(this.serverless.service.custom, 'Not Auto Scaling configuration found')
-    assert(this.serverless.service.custom.capacities, 'Not Auto Scaling configuration found')
+    assert(this.serverless.service.custom, text.NO_AUTOSCALING_CONFIG)
+    assert(this.serverless.service.custom.capacities, text.NO_AUTOSCALING_CONFIG)
   }
 
   /**
@@ -101,7 +107,7 @@ class Plugin {
    * Generate CloudFormation resources for DynamoDB table and indexes
    *
    * @param {string} table
-   * @param {obejct} config
+   * @param {object} config
    */
   generate (table, config) {
     let resources = []
