@@ -9,6 +9,7 @@ describe('Normalize', () => {
     expect(test.normalize('test')).toEqual(['test'])
     expect(test.normalize(['test'])).toEqual(['test'])
     expect(test.normalize(['test', 'foo'])).toEqual(['test', 'foo'])
+    expect(test.normalize([])).toEqual([])
     expect(test.normalize()).toEqual([])
   })
 })

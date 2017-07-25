@@ -135,19 +135,15 @@ class Plugin {
   /**
    * Check if parameter is defined and return as array if only a string is provided
    *
-   * @param {stirng|array} data
+   * @param {array|string} data
    * @return {array}
    */
   normalize (data) {
-    if (!data) {
-      return []
+    if (data && data.constructor !== Array) {
+      return [ data.toString() ]
     }
 
-    if (data.constructor !== Array) {
-      return [data]
-    }
-
-    return data.slice(0)
+    return (data || []).slice(0)
   }
 
   /**
@@ -178,27 +174,19 @@ class Plugin {
         }
       )
     }
-
-    return Promise.resolve()
   }
 
   beforeDeployResources () {
     return Promise.resolve().then(
-      this.validate.bind(this)
+      () => this.validate()
     ).then(
-      () => this.serverless.cli.log(
-        util.format('Configure DynamoDB Auto Scaling …')
-      )
+      () => this.serverless.cli.log(util.format('Configure DynamoDB Auto Scaling …'))
     ).then(
-      this.process.bind(this)
+      () => this.process()
     ).then(
-      () => this.serverless.cli.log(
-        util.format('Added DynamoDB Auto Scaling to CloudFormation!')
-      )
+      () => this.serverless.cli.log(util.format('Added DynamoDB Auto Scaling to CloudFormation!'))
     ).catch(
-      err => this.serverless.cli.log(
-        util.format('Skipping DynamoDB Auto Scaling: %s!', err.message)
-      )
+      er => this.serverless.cli.log(util.format('Skipping DynamoDB Auto Scaling: %s!', er.message))
     )
   }
 }

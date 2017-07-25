@@ -7,7 +7,8 @@ function clean (input) {
 function policyScale (table, read, index, stage) {
   return clean(
     util.format(
-      'Table%sScalingPolicy-%s%s%s', read ? 'Read' : 'Write',
+      'Table%sScalingPolicy-%s%s%s',
+      read ? 'Read' : 'Write',
       table,
       index || '',
       stage || ''
