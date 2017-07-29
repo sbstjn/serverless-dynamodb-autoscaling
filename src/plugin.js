@@ -18,18 +18,21 @@ class Plugin {
    *
    * @param {object} serverless
    */
-  constructor (serverless, options) {
+  constructor (serverless) {
     this.serverless = serverless
-
-    if (options && options.stage) {
-      this.stage = options.stage
-    } else {
-      this.stage = serverless.service.provider.stage
-    }
 
     this.hooks = {
       'deploy:compileEvents': this.beforeDeployResources.bind(this)
     }
+  }
+
+  /**
+   * Get the current stage name
+   *
+   * @return {string}
+   */
+  getStage () {
+    return this.serverless.getProvider('aws').getStage()
   }
 
   /**
@@ -78,7 +81,7 @@ class Plugin {
    */
   resources (table, index, config) {
     const resources = []
-    const stage = this.stage
+    const stage = this.getStage()
     const data = this.defaults(config)
 
     // Start processing configuration
