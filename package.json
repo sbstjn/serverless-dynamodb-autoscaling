@@ -39,7 +39,8 @@
     "standard": "^10.0.2"
   },
   "dependencies": {
-    "lodash": "^4.17.4"
+    "lodash": "^4.17.4",
+    "md5": "^2.2.1"
   },
   "standard": {
     "envs": [
