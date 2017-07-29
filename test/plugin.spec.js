@@ -4,7 +4,7 @@ const Plugin = require('../')
 
 describe('Normalize', () => {
   it('converts everything to an array', () => {
-    const test = new Plugin()
+    const test = new Plugin({ service: { provider: { stage: 'foo' } } })
 
     expect(test.normalize('test')).toEqual(['test'])
     expect(test.normalize(['test'])).toEqual(['test'])
@@ -21,7 +21,7 @@ describe('Defaults', () => {
       write: { minimum: 20 }
     }
 
-    const test = new Plugin()
+    const test = new Plugin({ service: { provider: { stage: 'foo' } } })
     const data = test.defaults(config)
 
     expect(data.read.minimum).toBe(5)
@@ -31,5 +31,19 @@ describe('Defaults', () => {
     expect(data.write.minimum).toBe(20)
     expect(data.write.maximum).toBe(200)
     expect(data.write.usage).toBe(0.75)
+  })
+})
+
+describe('Stage', () => {
+  it('uses stage from configuration', () => {
+    const p = new Plugin({ service: { provider: { stage: 'foo' } } })
+
+    expect(p.stage).toBe('foo')
+  })
+
+  it('overwrites stage from options', () => {
+    const p = new Plugin({ service: { provider: { stage: 'foo' } } }, { stage: 'bar' })
+
+    expect(p.stage).toBe('bar')
   })
 })
