@@ -6,11 +6,7 @@ function clean (input) {
 }
 
 function truncate (input) {
-  if (input.length > 64) {
-    return util.format('%s%s', input.substr(0, 32), md5(input))
-  }
-
-  return input
+  return input.length <= 64 ? input : input.substr(0, 32) + md5(input)
 }
 
 function policyScale (table, read, index, stage) {
