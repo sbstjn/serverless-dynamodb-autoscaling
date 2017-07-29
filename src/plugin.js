@@ -18,8 +18,15 @@ class Plugin {
    *
    * @param {object} serverless
    */
-  constructor (serverless) {
+  constructor (serverless, options) {
     this.serverless = serverless
+
+    if (options && options.stage) {
+      this.stage = options.stage
+    } else {
+      this.stage = serverless.service.provider.stage
+    }
+
     this.hooks = {
       'deploy:compileEvents': this.beforeDeployResources.bind(this)
     }
@@ -71,7 +78,7 @@ class Plugin {
    */
   resources (table, index, config) {
     const resources = []
-    const stage = this.serverless.service.provider.stage
+    const stage = this.stage
     const data = this.defaults(config)
 
     // Start processing configuration
