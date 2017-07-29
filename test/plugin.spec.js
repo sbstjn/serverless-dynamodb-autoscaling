@@ -33,17 +33,3 @@ describe('Defaults', () => {
     expect(data.write.usage).toBe(0.75)
   })
 })
-
-describe('Stage', () => {
-  it('uses stage from configuration', () => {
-    const p = new Plugin({ service: { provider: { stage: 'foo' } } })
-
-    expect(p.stage).toBe('foo')
-  })
-
-  it('overwrites stage from options', () => {
-    const p = new Plugin({ service: { provider: { stage: 'foo' } } }, { stage: 'bar' })
-
-    expect(p.stage).toBe('bar')
-  })
-})
