@@ -4,6 +4,7 @@
   "version": "0.0.0",
   "main": "src/plugin.js",
   "scripts": {
+    "fix": "standard --fix",
     "test": "jest test",
     "test:cover": "jest test --coverage",
     "coveralls": "cat ./coverage/lcov.info | coveralls",
