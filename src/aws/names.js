@@ -2,11 +2,15 @@ const util = require('util')
 const md5 = require('md5')
 
 function clean (input) {
-  return turncate(input.replace(/[^a-z0-9+]+/gi, ''))
+  return truncate(input.replace(/[^a-z0-9+]+/gi, ''))
 }
 
-function turncate (input) {
-  return input.length > 64 ? md5(input) : input
+function truncate (input) {
+  if (input.length > 64) {
+    return util.format('%s%s', input.substr(0, 32), md5(input))
+  }
+
+  return input
 }
 
 function policyScale (table, read, index, stage) {

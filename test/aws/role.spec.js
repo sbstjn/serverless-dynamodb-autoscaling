@@ -22,7 +22,7 @@ describe('Role', () => {
 
     const d = j[names.role('my-table-name-with-some-extra-long-string-information-added-to-the-end')]
 
-    expect(d.Properties.RoleName.length).toBeLessThan(65)
-    expect(d).toHaveProperty('Properties.RoleName', '0cde19b63d7d9f9b35cd41a979fd72a2')
+    expect(d.Properties.RoleName.length).toBe(64)
+    expect(d).toHaveProperty('Properties.RoleName', 'DynamoDBAutoscaleRolemytablename0cde19b63d7d9f9b35cd41a979fd72a2')
   })
 })
