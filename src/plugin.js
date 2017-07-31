@@ -90,6 +90,7 @@ class Plugin {
    */
   resources (table, index, config) {
     const resources = []
+    const service = this.getServiceName()
     const stage = this.getStage()
     const data = this.defaults(config)
 
@@ -99,14 +100,14 @@ class Plugin {
     )
 
     // Add role to manage Auto Scaling policies
-    resources.push(new Role(table, index, stage))
+    resources.push(new Role(service, table, index, stage))
 
     // Only add Auto Scaling for read capacity if configuration set is available
     if (config.read) {
       resources.push(
         // ScaleIn/ScaleOut values are fix to 60% usage
-        new Policy(table, data.read.usage, true, 60, 60, index, stage),
-        new Target(table, data.read.minimum, data.read.maximum, true, index, stage)
+        new Policy(service, table, data.read.usage, true, 60, 60, index, stage),
+        new Target(service, table, data.read.minimum, data.read.maximum, true, index, stage)
       )
     }
 
@@ -114,8 +115,8 @@ class Plugin {
     if (config.write) {
       resources.push(
         // ScaleIn/ScaleOut values are fix to 60% usage
-        new Policy(table, data.write.usage, false, 60, 60, index, stage),
-        new Target(table, data.write.minimum, data.write.maximum, false, index, stage)
+        new Policy(service, table, data.write.usage, false, 60, 60, index, stage),
+        new Target(service, table, data.write.minimum, data.write.maximum, false, index, stage)
       )
     }
 
