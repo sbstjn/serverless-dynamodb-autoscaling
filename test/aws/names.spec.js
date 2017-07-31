@@ -12,11 +12,11 @@ describe('Clean', () => {
 
 describe('Names', () => {
   it('creates name for Role', () => {
-    expect(names.role('test-with-invalid-characters')).toBe('DynamoDBAutoscaleRoletestwithinvalidcharacters')
+    expect(names.role('service', 'test-with-invalid-characters')).toBe('serviceDynamoDBAutoscaleRoletestwithinvalidcharacters')
   })
 
   it('creates name for Role with index and stage', () => {
-    expect(names.role('test-with-invalid-characters', 'index', 'stage')).toBe('DynamoDBAutoscaleRoletestwithinvalidcharactersindexstage')
+    expect(names.role('service', 'test-with-invalid-characters', 'index', 'stage')).toBe('serviceDynamoDBAutoscaleRoletestwithinvalidcharactersindexstage')
   })
 
   it('creates name for Metric (read)', () => {
@@ -36,22 +36,22 @@ describe('Names', () => {
   })
 
   it('creates name for PolicyRole', () => {
-    expect(names.policyRole('test-with-invalid-characters')).toBe('DynamoDBAutoscalePolicytestwithinvalidcharacters')
+    expect(names.policyRole('', 'test-with-invalid-characters')).toBe('DynamoDBAutoscalePolicytestwithinvalidcharacters')
   })
 
   it('creates name for PolicyScale (read)', () => {
-    expect(names.policyScale('test-with-invalid-characters', true)).toBe('TableReadScalingPolicytestwithinvalidcharacters')
+    expect(names.policyScale('', 'test-with-invalid-characters', true)).toBe('TableReadScalingPolicytestwithinvalidcharacters')
   })
 
   it('creates name for PolicyScale (write)', () => {
-    expect(names.policyScale('test-with-invalid-characters', false)).toBe('TableWriteScalingPolicytestwithinvalidcharacters')
+    expect(names.policyScale('', 'test-with-invalid-characters', false)).toBe('TableWriteScalingPolicytestwithinvalidcharacters')
   })
 
   it('creates name for Target (read)', () => {
-    expect(names.target('test-with-invalid-characters', true)).toBe('AutoScalingTargetReadtestwithinvalidcharacters')
+    expect(names.target('', 'test-with-invalid-characters', true)).toBe('AutoScalingTargetReadtestwithinvalidcharacters')
   })
 
   it('creates name for Target (write)', () => {
-    expect(names.target('test-with-invalid-characters', false)).toBe('AutoScalingTargetWritetestwithinvalidcharacters')
+    expect(names.target('', 'test-with-invalid-characters', false)).toBe('AutoScalingTargetWritetestwithinvalidcharacters')
   })
 })

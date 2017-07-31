@@ -3,12 +3,12 @@ const Target = require('../../src/aws/target')
 
 describe('Target', () => {
   it('creates CF resource for read capacity', () => {
-    const t = new Target('my-table-name', 4, 100, true)
+    const t = new Target('', 'my-table-name', 4, 100, true)
     const j = t.toJSON()
 
-    expect(j).toHaveProperty(names.target('my-table-name', true))
+    expect(j).toHaveProperty(names.target('', 'my-table-name', true))
 
-    const d = j[names.target('my-table-name', true)]
+    const d = j[names.target('', 'my-table-name', true)]
 
     expect(d).toHaveProperty('Type', 'AWS::ApplicationAutoScaling::ScalableTarget')
     expect(d).toHaveProperty('Properties.MinCapacity', 4)
@@ -16,16 +16,16 @@ describe('Target', () => {
     expect(d).toHaveProperty('Properties.ScalableDimension', names.dimension(true))
     expect(d).toHaveProperty('Properties.ServiceNamespace', 'dynamodb')
     expect(d).toHaveProperty('Properties.RoleARN.Fn::GetAtt')
-    expect(d).toHaveProperty('Properties.RoleARN.Fn::GetAtt', [ names.role('my-table-name'), 'Arn' ])
+    expect(d).toHaveProperty('Properties.RoleARN.Fn::GetAtt', [ names.role('', 'my-table-name'), 'Arn' ])
   })
 
   it('creates CF resource for write capacity', () => {
-    const t = new Target('my-table-name', 100, 2000, false)
+    const t = new Target('', 'my-table-name', 100, 2000, false)
     const j = t.toJSON()
 
-    expect(j).toHaveProperty(names.target('my-table-name', false))
+    expect(j).toHaveProperty(names.target('', 'my-table-name', false))
 
-    const d = j[names.target('my-table-name', false)]
+    const d = j[names.target('', 'my-table-name', false)]
 
     expect(d).toHaveProperty('Type', 'AWS::ApplicationAutoScaling::ScalableTarget')
     expect(d).toHaveProperty('Properties.MinCapacity', 100)
@@ -33,6 +33,6 @@ describe('Target', () => {
     expect(d).toHaveProperty('Properties.ScalableDimension', names.dimension(false))
     expect(d).toHaveProperty('Properties.ServiceNamespace', 'dynamodb')
     expect(d).toHaveProperty('Properties.RoleARN.Fn::GetAtt')
-    expect(d).toHaveProperty('Properties.RoleARN.Fn::GetAtt', [ names.role('my-table-name'), 'Arn' ])
+    expect(d).toHaveProperty('Properties.RoleARN.Fn::GetAtt', [ names.role('', 'my-table-name'), 'Arn' ])
   })
 })
