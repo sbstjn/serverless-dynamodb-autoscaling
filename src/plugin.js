@@ -36,6 +36,15 @@ class Plugin {
   }
 
   /**
+   * Get the current service name
+   *
+   * @return {string}
+   */
+  getServiceName () {
+    return this.serverless.service.getServiceName()
+  }
+
+  /**
    * Validate the request and check if configuration is available
    */
   validate () {
