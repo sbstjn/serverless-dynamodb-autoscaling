@@ -12,11 +12,11 @@ describe('Clean', () => {
 
 describe('Names', () => {
   it('creates name for Role', () => {
-    expect(names.role('', 'test-with-invalid-characters')).toBe('DynamoDBAutoscaleRoletestwithinvalidcharacters')
+    expect(names.role('service', 'test-with-invalid-characters')).toBe('serviceDynamoDBAutoscaleRoletestwithinvalidcharacters')
   })
 
   it('creates name for Role with index and stage', () => {
-    expect(names.role('', 'test-with-invalid-characters', 'index', 'stage')).toBe('DynamoDBAutoscaleRoletestwithinvalidcharactersindexstage')
+    expect(names.role('service', 'test-with-invalid-characters', 'index', 'stage')).toBe('serviceDynamoDBAutoscaleRoletestwithinvalidcharactersindexstage')
   })
 
   it('creates name for Metric (read)', () => {

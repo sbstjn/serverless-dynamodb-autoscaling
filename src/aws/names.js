@@ -12,7 +12,8 @@ function truncate (input) {
 function policyScale (service, table, read, index, stage) {
   return clean(
     util.format(
-      'Table%sScalingPolicy-%s%s%s',
+      '%sTable%sScalingPolicy-%s%s%s',
+      service || '',
       read ? 'Read' : 'Write',
       table,
       index || '',
@@ -24,7 +25,8 @@ function policyScale (service, table, read, index, stage) {
 function policyRole (service, table, index, stage) {
   return clean(
     util.format(
-      'DynamoDBAutoscalePolicy-%s%s%s',
+      '%sDynamoDBAutoscalePolicy-%s%s%s',
+      service || '',
       table,
       index || '',
       stage || ''
@@ -43,7 +45,8 @@ function dimension (read, index) {
 function target (service, table, read, index, stage) {
   return clean(
     util.format(
-      'AutoScalingTarget%s-%s%s%s',
+      '%sAutoScalingTarget%s-%s%s%s',
+      service || '',
       read ? 'Read' : 'Write',
       table,
       index || '',
@@ -64,7 +67,8 @@ function metric (read) {
 function role (service, table, index, stage) {
   return clean(
     util.format(
-      'DynamoDBAutoscaleRole-%s%s%s',
+      '%sDynamoDBAutoscaleRole-%s%s%s',
+      service || '',
       table,
       index || '',
       stage || ''
