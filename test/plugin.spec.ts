@@ -1,6 +1,6 @@
 'use strict'
 
-const Plugin = require('../')
+import * as Plugin from '../src/plugin'
 
 describe('Normalize', () => {
   it('converts everything to an array', () => {
@@ -16,7 +16,7 @@ describe('Normalize', () => {
 
 describe('Defaults', () => {
   it('creates object with defaults', () => {
-    let config = {
+    const config = {
       read: { maximum: 100, usage: 1 },
       write: { minimum: 20 }
     }

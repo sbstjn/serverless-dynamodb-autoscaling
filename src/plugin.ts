@@ -1,26 +1,24 @@
-const _ = require('lodash')
-const util = require('util')
-const assert = require('assert')
+import * as assert from 'assert'
+import * as _ from 'lodash'
+import * as util from 'util'
 
-const Role = require('./aws/role')
-const Target = require('./aws/target')
-const Policy = require('./aws/policy')
+import Policy from './aws/policy'
+import Role from './aws/role'
+import Target from './aws/target'
 
 const text = {
   INVALID_CONFIGURATION: 'Invalid serverless configuration',
-  ONLY_AWS_SUPPORT: 'Only supported for AWS provicer',
-  NO_AUTOSCALING_CONFIG: 'Not Auto Scaling configuration found'
+  NO_AUTOSCALING_CONFIG: 'Not Auto Scaling configuration found',
+  ONLY_AWS_SUPPORT: 'Only supported for AWS provicer'
 }
 
 class Plugin {
+  public hooks: {}
+
   /**
    * Constructur
-   *
-   * @param {object} serverless
    */
-  constructor (serverless) {
-    this.serverless = serverless
-
+  constructor (private serverless: Serverless) {
     this.hooks = {
       'deploy:compileEvents': this.beforeDeployResources.bind(this)
     }
@@ -28,33 +26,27 @@ class Plugin {
 
   /**
    * Get the current stage name
-   *
-   * @return {string}
    */
-  getStage () {
+  private getStage(): string {
     return this.serverless.getProvider('aws').getStage()
   }
 
   /**
    * Get the current service name
-   *
-   * @return {string}
    */
-  getServiceName () {
+  private getServiceName(): string {
     return this.serverless.service.getServiceName()
   }
 
   /**
    * Validate the request and check if configuration is available
    */
-  validate () {
+  private validate(): void {
     assert(this.serverless, text.INVALID_CONFIGURATION)
     assert(this.serverless.service, text.INVALID_CONFIGURATION)
     assert(this.serverless.service.provider, text.INVALID_CONFIGURATION)
     assert(this.serverless.service.provider.name, text.INVALID_CONFIGURATION)
     assert(this.serverless.service.provider.name === 'aws', text.ONLY_AWS_SUPPORT)
-
-    assert(this.serverless.service.provider.stage, text.INVALID_CONFIGURATION)
 
     assert(this.serverless.service.custom, text.NO_AUTOSCALING_CONFIG)
     assert(this.serverless.service.custom.capacities, text.NO_AUTOSCALING_CONFIG)
@@ -62,33 +54,26 @@ class Plugin {
 
   /**
    * Parse configuration and fill up with default values when needed
-   *
-   * @param {object} config
-   * @return {object}
    */
-  defaults (config) {
+  private defaults(config: Capacity): { read: CapacityConfiguration, write: CapacityConfiguration } {
     return {
       read: {
-        usage: config.read && config.read.usage ? config.read.usage : 0.75,
+        maximum: config.read && config.read.maximum ? config.read.maximum : 200,
         minimum: config.read && config.read.minimum ? config.read.minimum : 5,
-        maximum: config.read && config.read.maximum ? config.read.maximum : 200
+        usage: config.read && config.read.usage ? config.read.usage : 0.75
       },
       write: {
-        usage: config.write && config.write.usage ? config.write.usage : 0.75,
+        maximum: config.write && config.write.maximum ? config.write.maximum : 200,
         minimum: config.write && config.write.minimum ? config.write.minimum : 5,
-        maximum: config.write && config.write.maximum ? config.write.maximum : 200
+        usage: config.write && config.write.usage ? config.write.usage : 0.75
       }
     }
   }
 
   /**
    * Create CloudFormation resources for table (and optional index)
-   *
-   * @param {string} table
-   * @param {string} index
-   * @param {object} config
    */
-  resources (table, index, config) {
+  private resources(table: string, index: string, config: Capacity): any[] {
     const resources = []
     const service = this.getServiceName()
     const stage = this.getStage()
@@ -125,27 +110,24 @@ class Plugin {
 
   /**
    * Generate CloudFormation resources for DynamoDB table and indexes
-   *
-   * @param {string} table
-   * @param {object} config
    */
-  generate (table, config) {
-    let resources = []
-    let lastRessources = []
+  private generate(table: string, config: Capacity) {
+    let resources: any[] = []
+    let lastRessources: any[] = []
 
     const indexes = this.normalize(config.index)
     if (!config.indexOnly) {
-      indexes.unshift(null) // Horrible solution
+      indexes.unshift('') // Horrible solution
     }
 
     indexes.forEach(
-      index => {
+      (index: string) => {
         const current = this.resources(table, index, config).map(
-          resource => resource.setDependencies(lastRessources).toJSON()
+          (resource: any) => resource.setDependencies(lastRessources).toJSON()
         )
 
         resources = resources.concat(current)
-        lastRessources = current.map(item => Object.keys(item).pop())
+        lastRessources = current.map((item: any) => Object.keys(item).pop())
       }
     )
 
@@ -154,30 +136,25 @@ class Plugin {
 
   /**
    * Check if parameter is defined and return as array if only a string is provided
-   *
-   * @param {array|string} data
-   * @return {array}
    */
-  normalize (data) {
+  private normalize(data: string|string[]): string[] {
     if (data && data.constructor !== Array) {
-      return [ data.toString() ]
+      return [ data as string ]
     }
 
-    return (data || []).slice(0)
+    return (data as string[] || []).slice(0)
   }
 
   /**
    * Process the provided configuration
-   *
-   * @return {Promise}
    */
-  process () {
+  private process() {
     this.serverless.service.custom.capacities.filter(
-      config => !!config.read || !!config.write
+      (config: Capacity) => !!config.read || !!config.write
     ).forEach(
-      config => this.normalize(config.table).forEach(
-        table => this.generate(table, config).forEach(
-          resource => _.merge(
+      (config: Capacity) => this.normalize(config.table).forEach(
+        (table: string) => this.generate(table, config).forEach(
+          (resource: string) => _.merge(
             this.serverless.service.provider.compiledCloudFormationTemplate.Resources,
             resource
           )
@@ -186,7 +163,7 @@ class Plugin {
     )
   }
 
-  beforeDeployResources () {
+  private beforeDeployResources(): Promise<any> {
     return Promise.resolve().then(
       () => this.validate()
     ).then(
@@ -196,7 +173,7 @@ class Plugin {
     ).then(
       () => this.serverless.cli.log(util.format('Added DynamoDB Auto Scaling to CloudFormation!'))
     ).catch(
-      er => this.serverless.cli.log(util.format('Skipping DynamoDB Auto Scaling: %s!', er.message))
+      (err: Error) => this.serverless.cli.log(util.format('Skipping DynamoDB Auto Scaling: %s!', err.message))
     )
   }
 }

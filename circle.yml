@@ -11,6 +11,7 @@ test:
     - yarn lint
   override:
     - yarn test:cover
+    - yarn build
   post:
     - yarn coveralls
 

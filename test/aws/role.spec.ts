@@ -1,5 +1,5 @@
-const names = require('../../src/aws/names')
-const Role = require('../../src/aws/role')
+import * as names from '../../src/aws/names'
+import Role from '../../src/aws/role'
 
 describe('Role', () => {
   it('creates CF resource', () => {
