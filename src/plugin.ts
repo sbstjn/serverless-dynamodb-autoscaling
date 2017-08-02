@@ -91,7 +91,7 @@ class Plugin {
     if (config.read) {
       resources.push(
         // ScaleIn/ScaleOut values are fix to 60% usage
-        new Policy(service, table, data.read.usage, true, 60, 60, index, stage),
+        new Policy(service, table, data.read.usage * 100, true, 60, 60, index, stage),
         new Target(service, table, data.read.minimum, data.read.maximum, true, index, stage)
       )
     }
@@ -100,7 +100,7 @@ class Plugin {
     if (config.write) {
       resources.push(
         // ScaleIn/ScaleOut values are fix to 60% usage
-        new Policy(service, table, data.write.usage, false, 60, 60, index, stage),
+        new Policy(service, table, data.write.usage * 100, false, 60, 60, index, stage),
         new Target(service, table, data.write.minimum, data.write.maximum, false, index, stage)
       )
     }
