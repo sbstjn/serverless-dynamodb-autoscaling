@@ -2,13 +2,13 @@
   "name": "serverless-dynamodb-autoscaling",
   "description": "Serverless Plugin for Amazon DynamoDB Auto Scaling.",
   "version": "0.0.0",
-  "main": "src/plugin.js",
+  "main": "dist/plugin.js",
   "scripts": {
-    "fix": "standard --fix",
-    "test": "jest test",
-    "test:cover": "jest test --coverage",
+    "test": "jest",
+    "test:cover": "jest --coverage",
     "coveralls": "cat ./coverage/lcov.info | coveralls",
-    "lint": "standard | snazzy"
+    "lint": "tslint {src,test}/**/*.ts",
+    "build": "tsc"
   },
   "keywords": [
     "serverless",
@@ -32,24 +32,29 @@
   },
   "homepage": "https://github.com/sbstjn/serverless-dynamodb-autoscaling",
   "devDependencies": {
+    "@types/jest": "^20.0.5",
+    "@types/node": "^8.0.19",
     "coveralls": "^2.13.1",
     "dot-json": "^1.0.3",
     "jest": "^20.0.4",
-    "snazzy": "^7.0.0",
-    "standard": "^10.0.2"
+    "ts-jest": "^20.0.7",
+    "tslint": "^5.5.0",
+    "@types/md5": "^2.1.32",
+    "@types/lodash": "^4.14.71",
+    "typescript": "^2.4.2"
   },
   "dependencies": {
     "lodash": "^4.17.4",
     "md5": "^2.2.1"
   },
-  "standard": {
-    "envs": [
-      "node",
-      "jest"
-    ],
-    "ignore": [
-      "node_modules/",
-      "coverage"
+  "jest": {
+    "transform": {
+      ".*": "<rootDir>/node_modules/ts-jest/preprocessor.js"
+    },
+    "testRegex": "(/__tests__/.*|\\.(test|spec))\\.(ts)$",
+    "moduleFileExtensions": [
+      "ts",
+      "js"
     ]
   }
 }

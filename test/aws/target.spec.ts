@@ -1,5 +1,5 @@
-const names = require('../../src/aws/names')
-const Target = require('../../src/aws/target')
+import * as names from '../../src/aws/names'
+import Target from '../../src/aws/target'
 
 describe('Target', () => {
   it('creates CF resource for read capacity', () => {
