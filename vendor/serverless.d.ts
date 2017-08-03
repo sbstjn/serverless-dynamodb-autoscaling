@@ -17,6 +17,10 @@ declare namespace Serverless {
       request: (service: string, method: string, data: {}, stage: string, region: string) => Promise<any>
     }
   }
+
+  namespace Service {
+    interface Custom { }
+  }
 }
 
 declare interface Serverless {
@@ -39,10 +43,8 @@ declare interface Serverless {
   service: {
     getServiceName(): string
     getAllFunctions(): string[]
-    
-    custom: {
-      capacities: Capacity[]
-    }
+
+    custom: Serverless.Service.Custom
 
     provider: {
       compiledCloudFormationTemplate: {
