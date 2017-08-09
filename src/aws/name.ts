@@ -64,7 +64,7 @@ export default class Name {
   }
 
   public dimension(read: boolean): string {
-    const type = this.options.index === '' ? 'index' : 'table'
+    const type = this.options.index === '' ? 'table' : 'index'
 
     return util.format(TEXT.DIMENSION, type, read ? 'Read' : 'Write')
   }

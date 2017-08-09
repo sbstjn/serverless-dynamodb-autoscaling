@@ -13,7 +13,7 @@ describe('Name', () => {
     })
 
     const names = {
-      dimension: 'dynamodb:table:WriteCapacityUnits',
+      dimension: 'dynamodb:index:WriteCapacityUnits',
       metricRead: 'DynamoDBReadCapacityUtilization',
       metricWrite: 'DynamoDBWriteCapacityUtilization',
       policyRole: 'serviceDynamoDBAutoscalePolicyTableIndexStageRegion',
@@ -41,7 +41,7 @@ describe('Name', () => {
     })
 
     const names = {
-      dimension: 'dynamodb:index:WriteCapacityUnits',
+      dimension: 'dynamodb:table:WriteCapacityUnits',
       metricRead: 'DynamoDBReadCapacityUtilization',
       metricWrite: 'DynamoDBWriteCapacityUtilization',
       policyRole: 'serviceDynamoDBAutoscalePolicyTableStageRegion',
@@ -69,7 +69,7 @@ describe('Name', () => {
     })
 
     const names = {
-      dimension: 'dynamodb:index:WriteCapacityUnits',
+      dimension: 'dynamodb:table:WriteCapacityUnits',
       metricRead: 'DynamoDBReadCapacityUtilization',
       metricWrite: 'DynamoDBWriteCapacityUtilization',
       policyRole: 'servicewithaverylongnamesonamesaeedda6de5ac2172c15c8d808a2cad991',

@@ -22,7 +22,7 @@ export default class Target {
 
     const resource = [ 'table/', { Ref: this.options.table } ]
 
-    if (this.options.index) {
+    if (this.options.index !== '') {
       resource.push('/index/', this.options.index)
     }
 
