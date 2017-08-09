@@ -18,6 +18,11 @@ declare namespace Serverless {
     }
   }
 
+  namespace Service {
+    interface Custom { }
+  }
+}
+
   class Plugin {
     constructor(serverless: Serverless, options: Options)
   }
