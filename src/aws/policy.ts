@@ -1,18 +1,15 @@
-import * as names from './names'
+import { default as Name, Options } from './name'
 
 export default class Policy {
   private dependencies: string[] = []
   private type: string = 'AWS::ApplicationAutoScaling::ScalingPolicy'
 
   constructor (
-    private service: string,
-    private table: string,
-    private value: number,
+    private options: Options,
     private read: boolean,
+    private value: number,
     private scaleIn: number,
-    private scaleOut: number,
-    private index: string,
-    private stage: string
+    private scaleOut: number
   ) { }
 
   public setDependencies(list: string[]): Policy {
@@ -22,22 +19,24 @@ export default class Policy {
   }
 
   public toJSON(): any {
-    const nameMetric = names.metric(this.read)
-    const nameScalePolicy = names.policyScale(this.service, this.table, this.read, this.index, this.stage)
-    const nameTarget = names.target(this.service, this.table, this.read, this.index, this.stage)
+    const n = new Name(this.options)
 
-    const dependencies = [this.table, nameTarget ].concat(this.dependencies)
+    const PredefinedMetricType = n.metric(this.read)
+    const PolicyName = n.policyScale(this.read)
+    const Target = n.target(this.read)
+
+    const DependsOn = [ this.options.table, Target ].concat(this.dependencies)
 
     return {
-      [nameScalePolicy]: {
-        DependsOn: dependencies,
+      [PolicyName]: {
+        DependsOn,
         Properties: {
-          PolicyName: nameScalePolicy,
+          PolicyName,
           PolicyType: 'TargetTrackingScaling',
-          ScalingTargetId: { Ref: nameTarget },
+          ScalingTargetId: { Ref: Target },
           TargetTrackingScalingPolicyConfiguration: {
             PredefinedMetricSpecification: {
-              PredefinedMetricType: nameMetric
+              PredefinedMetricType
             },
             ScaleInCooldown: this.scaleIn,
             ScaleOutCooldown: this.scaleOut,

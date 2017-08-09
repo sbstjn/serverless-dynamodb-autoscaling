@@ -1,17 +1,14 @@
-import * as names from './names'
+import { default as Name, Options } from './name'
 
 export default class Target {
   private dependencies: string[] = []
-  private type: string = 'AWS::ApplicationAutoScaling::ScalableTarget'
+  private type = 'AWS::ApplicationAutoScaling::ScalableTarget'
 
   constructor (
-    private service: string,
-    private table: string,
-    private min: number,
-    private max: number,
+    private options: Options,
     private read: boolean,
-    private index?: string,
-    private stage?: string
+    private min: number,
+    private max: number
   ) { }
 
   public setDependencies(list: string[]): Target {
@@ -21,21 +18,23 @@ export default class Target {
   }
 
   public toJSON(): any {
-    const resource = [ 'table/', { Ref: this.table } ]
+    const n = new Name(this.options)
 
-    if (this.index) {
-      resource.push('/index/', this.index)
+    const resource = [ 'table/', { Ref: this.options.table } ]
+
+    if (this.options.index) {
+      resource.push('/index/', this.options.index)
     }
 
-    const nameTarget = names.target(this.service, this.table, this.read, this.index, this.stage)
-    const nameRole = names.role(this.service, this.table, this.index, this.stage)
-    const nameDimension = names.dimension(this.read, !!this.index)
+    const nameTarget = n.target(this.read)
+    const nameRole = n.role()
+    const nameDimension = n.dimension(this.read)
 
-    const dependencies = [ this.table, nameRole ].concat(this.dependencies)
+    const DependsOn = [ this.options.table, nameRole ].concat(this.dependencies)
 
     return {
       [nameTarget]: {
-        DependsOn: dependencies,
+        DependsOn,
         Properties: {
           MaxCapacity: this.max,
           MinCapacity: this.min,

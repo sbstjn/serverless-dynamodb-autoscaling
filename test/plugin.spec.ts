@@ -1,5 +1,3 @@
-'use strict'
-
 import * as Plugin from '../src/plugin'
 
 describe('Normalize', () => {

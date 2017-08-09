@@ -1122,6 +1122,10 @@ istanbul-reports@^1.1.1:
   dependencies:
     handlebars "^4.0.3"
 
+jasmine-data-provider@^2.2.0:
+  version "2.2.0"
+  resolved "https://registry.yarnpkg.com/jasmine-data-provider/-/jasmine-data-provider-2.2.0.tgz#5f029b2c5fbcdaafbfa5b910ca627eac48cdbb66"
+
 jest-changed-files@^20.0.3:
   version "20.0.3"
   resolved "https://registry.yarnpkg.com/jest-changed-files/-/jest-changed-files-20.0.3.tgz#9394d5cc65c438406149bef1bf4d52b68e03e3f8"

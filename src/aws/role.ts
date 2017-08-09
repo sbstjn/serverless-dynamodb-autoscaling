@@ -1,4 +1,4 @@
-import * as names from './names'
+import { default as Name, Options } from './name'
 
 export default class Role {
   private dependencies: string[] = []
@@ -19,10 +19,7 @@ export default class Role {
   }
 
   constructor (
-    private service: string,
-    private table: string,
-    private index: string,
-    private stage: string
+    private options: Options
   ) { }
 
   public setDependencies(list: string[]): Role {
@@ -32,43 +29,55 @@ export default class Role {
   }
 
   public toJSON(): any {
-    const nameRole = names.role(this.service, this.table, this.index, this.stage)
-    const namePolicyRole = names.policyRole(this.service, this.table, this.index, this.stage)
+    const n = new Name(this.options)
 
-    const dependencies = [ this.table ].concat(this.dependencies)
-    const principal = {
-      Service: 'application-autoscaling.amazonaws.com'
-    }
-    const resource = {
-      'Fn::Join': [ '', [ 'arn:aws:dynamodb:*:', { Ref: 'AWS::AccountId' }, ':table/', { Ref: this.table } ] ]
-    }
+    const RoleName = n.role()
+    const PolicyName = n.policyRole()
+
+    const DependsOn = [ this.options.table ].concat(this.dependencies)
+    const Principal = this.principal()
+    const Resource = this.resource()
+    const Version = this.version
+    const Type = this.type
 
     return {
-      [nameRole]: {
-        DependsOn: dependencies,
+      [RoleName]: {
+        DependsOn,
         Properties: {
           AssumeRolePolicyDocument: {
             Statement: [
-              { Action: 'sts:AssumeRole', Effect: 'Allow', Principal: principal }
+              { Action: 'sts:AssumeRole', Effect: 'Allow', Principal }
             ],
-            Version: this.version
+            Version
           },
           Policies: [
             {
               PolicyDocument: {
                 Statement: [
                   { Action: this.actions.CloudWatch, Effect: 'Allow', Resource: '*' },
-                  { Action: this.actions.DynamoDB, Effect: 'Allow', Resource: resource }
+                  { Action: this.actions.DynamoDB, Effect: 'Allow', Resource }
                 ],
-                Version: this.version
+                Version
               },
-              PolicyName: namePolicyRole
+              PolicyName
             }
           ],
-          RoleName: nameRole
+          RoleName
         },
-        Type: this.type
+        Type
       }
+    }
+  }
+
+  private resource(): {} {
+    return {
+      'Fn::Join': [ '', [ 'arn:aws:dynamodb:*:', { Ref: 'AWS::AccountId' }, ':table/', { Ref: this.options.table } ] ]
+    }
+  }
+
+  private principal(): {} {
+    return {
+      Service: 'application-autoscaling.amazonaws.com'
     }
   }
 }

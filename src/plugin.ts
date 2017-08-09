@@ -2,6 +2,7 @@ import * as assert from 'assert'
 import * as _ from 'lodash'
 import * as util from 'util'
 
+import { Options } from './aws/name'
 import Policy from './aws/policy'
 import Role from './aws/role'
 import Target from './aws/target'
@@ -10,6 +11,11 @@ const text = {
   INVALID_CONFIGURATION: 'Invalid serverless configuration',
   NO_AUTOSCALING_CONFIG: 'Not Auto Scaling configuration found',
   ONLY_AWS_SUPPORT: 'Only supported for AWS provicer'
+}
+
+interface Defaults {
+  read: CapacityConfiguration,
+  write: CapacityConfiguration
 }
 
 class Plugin {
@@ -39,6 +45,13 @@ class Plugin {
   }
 
   /**
+   * Get the current service region
+   */
+  private getRegion(): string {
+    return this.serverless.getProvider('aws').getRegion()
+  }
+
+  /**
    * Validate the request and check if configuration is available
    */
   private validate(): void {
@@ -55,7 +68,7 @@ class Plugin {
   /**
    * Parse configuration and fill up with default values when needed
    */
-  private defaults(config: Capacity): { read: CapacityConfiguration, write: CapacityConfiguration } {
+  private defaults(config: Capacity): Defaults {
     return {
       read: {
         maximum: config.read && config.read.maximum ? config.read.maximum : 200,
@@ -74,10 +87,15 @@ class Plugin {
    * Create CloudFormation resources for table (and optional index)
    */
   private resources(table: string, index: string, config: Capacity): any[] {
-    const resources = []
-    const service = this.getServiceName()
-    const stage = this.getStage()
     const data = this.defaults(config)
+
+    const options: Options = {
+      index,
+      region: this.getRegion(),
+      service: this.getServiceName(),
+      stage: this.getStage(),
+      table
+    }
 
     // Start processing configuration
     this.serverless.cli.log(
@@ -85,27 +103,28 @@ class Plugin {
     )
 
     // Add role to manage Auto Scaling policies
-    resources.push(new Role(service, table, index, stage))
+    const resources: any[] = [
+      new Role(options)
+    ]
 
     // Only add Auto Scaling for read capacity if configuration set is available
-    if (config.read) {
-      resources.push(
-        // ScaleIn/ScaleOut values are fix to 60% usage
-        new Policy(service, table, data.read.usage * 100, true, 60, 60, index, stage),
-        new Target(service, table, data.read.minimum, data.read.maximum, true, index, stage)
-      )
+    if (!!config.read) {
+      resources.push(...this.getPolicyAndTarget(options, data, true))
     }
 
     // Only add Auto Scaling for write capacity if configuration set is available
-    if (config.write) {
-      resources.push(
-        // ScaleIn/ScaleOut values are fix to 60% usage
-        new Policy(service, table, data.write.usage * 100, false, 60, 60, index, stage),
-        new Target(service, table, data.write.minimum, data.write.maximum, false, index, stage)
-      )
+    if (!!config.write) {
+      resources.push(...this.getPolicyAndTarget(options, data, false))
     }
 
     return resources
+  }
+
+  private getPolicyAndTarget(options: Options, data: Defaults, read: boolean): any[] {
+    return [
+      new Policy(options, false, data.read.usage * 100, 60, 60),
+      new Target(options, false, data.read.minimum, data.read.maximum)
+    ]
   }
 
   /**
