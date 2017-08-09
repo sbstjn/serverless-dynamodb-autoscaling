@@ -8,6 +8,10 @@ import Role from './aws/role'
 import Target from './aws/target'
 
 const text = {
+  CLI_DONE: 'Added DynamoDB Auto Scaling to CloudFormation!',
+  CLI_RESOURCE: ' - Building configuration for resource "table/%s%s"',
+  CLI_SKIP: 'Skipping DynamoDB Auto Scaling: %s!',
+  CLI_START: 'Configure DynamoDB Auto Scaling …',
   INVALID_CONFIGURATION: 'Invalid serverless configuration',
   NO_AUTOSCALING_CONFIG: 'Not Auto Scaling configuration found',
   ONLY_AWS_SUPPORT: 'Only supported for AWS provicer'
@@ -99,7 +103,7 @@ class Plugin {
 
     // Start processing configuration
     this.serverless.cli.log(
-      util.format(' - Building configuration for resource "table/%s%s"', table, (index ? ('/index/' + index) : ''))
+      util.format(text.CLI_RESOURCE, table, (index ? ('/index/' + index) : ''))
     )
 
     // Add role to manage Auto Scaling policies
@@ -186,13 +190,13 @@ class Plugin {
     return Promise.resolve().then(
       () => this.validate()
     ).then(
-      () => this.serverless.cli.log(util.format('Configure DynamoDB Auto Scaling …'))
+      () => this.serverless.cli.log(util.format(text.CLI_START))
     ).then(
       () => this.process()
     ).then(
-      () => this.serverless.cli.log(util.format('Added DynamoDB Auto Scaling to CloudFormation!'))
+      () => this.serverless.cli.log(util.format(text.CLI_DONE))
     ).catch(
-      (err: Error) => this.serverless.cli.log(util.format('Skipping DynamoDB Auto Scaling: %s!', err.message))
+      (err: Error) => this.serverless.cli.log(util.format(text.CLI_SKIP, err.message))
     )
   }
 }
