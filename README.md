@@ -121,3 +121,18 @@ Feel free to use the code, it's released using the [MIT license](LICENSE.md).
 You are welcome to contribute to this project! 😘 
 
 To make sure you have a pleasant experience, please read the [code of conduct](CODE_OF_CONDUCT.md). It outlines core values and beliefs and will make working together a happier experience.
+
+### Local Development
+
+If you plan to change the TypeScript files and link the package to another project, use the `link` and `build` yarn commands:
+
+```
+$ > yarn link
+$ > yarn build:watch # or "yarn build"
+```
+
+Use your local build of the package in another project:
+
+```
+$ > yarn link serverless-dynamodb-autoscaling
+```
