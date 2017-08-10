@@ -1,21 +1,15 @@
 import { default as Name, Options } from './name'
+import Resource from './resource'
 
-export default class Target {
-  private dependencies: string[] = []
+export default class Target extends Resource {
   private type = 'AWS::ApplicationAutoScaling::ScalableTarget'
 
   constructor (
-    private options: Options,
+    options: Options,
     private read: boolean,
     private min: number,
     private max: number
-  ) { }
-
-  public setDependencies(list: string[]): Target {
-    this.dependencies = list
-
-    return this
-  }
+  ) { super(options) }
 
   public toJSON(): any {
     const n = new Name(this.options)

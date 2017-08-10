@@ -1,7 +1,7 @@
 import { default as Name, Options } from './name'
+import Resource from './resource'
 
-export default class Role {
-  private dependencies: string[] = []
+export default class Role extends Resource {
   private type: string = 'AWS::IAM::Role'
   private version: string = '2012-10-17'
   private actions = {
@@ -19,14 +19,8 @@ export default class Role {
   }
 
   constructor (
-    private options: Options
-  ) { }
-
-  public setDependencies(list: string[]): Role {
-    this.dependencies = list
-
-    return this
-  }
+    options: Options
+  ) { super(options) }
 
   public toJSON(): any {
     const n = new Name(this.options)
@@ -36,7 +30,6 @@ export default class Role {
 
     const DependsOn = [ this.options.table ].concat(this.dependencies)
     const Principal = this.principal()
-    const Resource = this.resource()
     const Version = this.version
     const Type = this.type
 
@@ -55,7 +48,7 @@ export default class Role {
               PolicyDocument: {
                 Statement: [
                   { Action: this.actions.CloudWatch, Effect: 'Allow', Resource: '*' },
-                  { Action: this.actions.DynamoDB, Effect: 'Allow', Resource }
+                  { Action: this.actions.DynamoDB, Effect: 'Allow', Resource: this.resource() }
                 ],
                 Version
               },

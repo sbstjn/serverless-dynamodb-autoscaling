@@ -1,22 +1,16 @@
 import { default as Name, Options } from './name'
+import Resource from './resource'
 
-export default class Policy {
-  private dependencies: string[] = []
+export default class Policy extends Resource {
   private type: string = 'AWS::ApplicationAutoScaling::ScalingPolicy'
 
   constructor (
-    private options: Options,
+    options: Options,
     private read: boolean,
     private value: number,
     private scaleIn: number,
     private scaleOut: number
-  ) { }
-
-  public setDependencies(list: string[]): Policy {
-    this.dependencies = list
-
-    return this
-  }
+  ) { super(options) }
 
   public toJSON(): any {
     const n = new Name(this.options)
