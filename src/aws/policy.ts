@@ -1,4 +1,4 @@
-import { default as Name, Options } from './name'
+import { Options } from './name'
 import Resource from './resource'
 
 export default class Policy extends Resource {
