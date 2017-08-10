@@ -73,7 +73,7 @@ Rate exceeded (Service: AmazonCloudWatch; Status Code: 400; Error Code: Throttli
 
 ### Breaking Changes
 
-*There have been multiple breaking changes regarding CloudFormation resource names in the past. If you end up with an error, that your CloudFormation Stack cannot be updaten, try to remove the `custom > capacities` configuration from your `serverless.yml` and deploy your service without any Auto Scaling configuration. After that, just re-add your previous configuration and re-deploy your service again.*
+*There have been multiple breaking changes regarding CloudFormation resource names in the past. If you end up with an error, that your CloudFormation Stack cannot be updated, try to remove the `custom > capacities` configuration from your `serverless.yml` file and deploy the service without any Auto Scaling configuration. After that, just re-add your previous configuration and deploy your service again.*
 
 ## DynamoDB
 
