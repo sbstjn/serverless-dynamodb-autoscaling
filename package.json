@@ -1,6 +1,7 @@
 {
   "name": "serverless-dynamodb-autoscaling",
   "description": "Serverless Plugin for Amazon DynamoDB Auto Scaling.",
+  "homepage": "https://sbstjn.com/serverless-dynamodb-auto-scaling-with-cloudformation.html",
   "version": "0.0.0",
   "main": "dist/plugin.js",
   "scripts": {
@@ -32,7 +33,6 @@
   "bugs": {
     "url": "https://github.com/sbstjn/serverless-dynamodb-autoscaling/issues"
   },
-  "homepage": "https://github.com/sbstjn/serverless-dynamodb-autoscaling",
   "devDependencies": {
     "@types/jest": "^20.0.5",
     "@types/lodash": "^4.14.71",
