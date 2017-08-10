@@ -1,43 +1,33 @@
-import * as names from './names'
+import Resource from './resource'
 
-export default class Policy {
-  private dependencies: string[] = []
-  private type: string = 'AWS::ApplicationAutoScaling::ScalingPolicy'
+export default class Policy extends Resource {
+  private readonly type: string = 'AWS::ApplicationAutoScaling::ScalingPolicy'
 
   constructor (
-    private service: string,
-    private table: string,
-    private value: number,
+    options: Options,
     private read: boolean,
+    private value: number,
     private scaleIn: number,
-    private scaleOut: number,
-    private index: string,
-    private stage: string
-  ) { }
-
-  public setDependencies(list: string[]): Policy {
-    this.dependencies = list
-
-    return this
-  }
+    private scaleOut: number
+  ) { super(options) }
 
   public toJSON(): any {
-    const nameMetric = names.metric(this.read)
-    const nameScalePolicy = names.policyScale(this.service, this.table, this.read, this.index, this.stage)
-    const nameTarget = names.target(this.service, this.table, this.read, this.index, this.stage)
+    const PredefinedMetricType = this.name.metric(this.read)
+    const PolicyName = this.name.policyScale(this.read)
+    const Target = this.name.target(this.read)
 
-    const dependencies = [this.table, nameTarget ].concat(this.dependencies)
+    const DependsOn = [ this.options.table, Target ].concat(this.dependencies)
 
     return {
-      [nameScalePolicy]: {
-        DependsOn: dependencies,
+      [PolicyName]: {
+        DependsOn,
         Properties: {
-          PolicyName: nameScalePolicy,
+          PolicyName,
           PolicyType: 'TargetTrackingScaling',
-          ScalingTargetId: { Ref: nameTarget },
+          ScalingTargetId: { Ref: Target },
           TargetTrackingScalingPolicyConfiguration: {
             PredefinedMetricSpecification: {
-              PredefinedMetricType: nameMetric
+              PredefinedMetricType
             },
             ScaleInCooldown: this.scaleIn,
             ScaleOutCooldown: this.scaleOut,

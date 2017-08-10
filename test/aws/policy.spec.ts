@@ -1,23 +1,22 @@
-import * as names from '../../src/aws/names'
 import Policy from '../../src/aws/policy'
 
 describe('Policy', () => {
   it('creates CF resource for read capacity', () => {
-    const p = new Policy('', 'my-table-name', 75, true, 60, 70)
+    const p = new Policy({
+      index: '',
+      region: '',
+      service: '',
+      stage: '',
+      table: 'MyTableResource'
+    }, true, 75, 60, 70)
+
     const j = p.toJSON()
 
-    expect(j).toHaveProperty(names.policyScale('', 'my-table-name', true))
+    expect(j).toHaveProperty('TableScalingPolicyReadMyTableResource')
 
-    const d = j[names.policyScale('', 'my-table-name', true)]
+    const d = j.TableScalingPolicyReadMyTableResource
 
     expect(d).toHaveProperty('Type', 'AWS::ApplicationAutoScaling::ScalingPolicy')
-    expect(d).toHaveProperty('Properties.PolicyName', names.policyScale('', 'my-table-name', true))
-    expect(d).toHaveProperty('Properties.PolicyType', 'TargetTrackingScaling')
-    expect(d).toHaveProperty('Properties.ScalingTargetId', { Ref: names.target('', 'my-table-name', true) })
-    expect(d).toHaveProperty(
-      'Properties.TargetTrackingScalingPolicyConfiguration.PredefinedMetricSpecification.PredefinedMetricType',
-      names.metric(true)
-    )
 
     const c = d.Properties.TargetTrackingScalingPolicyConfiguration
 
@@ -27,26 +26,26 @@ describe('Policy', () => {
   })
 
   it('creates CF resource for write capacity', () => {
-    const p = new Policy('', 'my-table-name', 15, false, 60, 70)
+    const p = new Policy({
+      index: '',
+      region: '',
+      service: '',
+      stage: '',
+      table: 'MyTableResource'
+    }, false, 10, 20, 30)
+
     const j = p.toJSON()
 
-    expect(j).toHaveProperty(names.policyScale('', 'my-table-name', false))
+    expect(j).toHaveProperty('TableScalingPolicyWriteMyTableResource')
 
-    const d = j[names.policyScale('', 'my-table-name', false)]
+    const d = j.TableScalingPolicyWriteMyTableResource
 
     expect(d).toHaveProperty('Type', 'AWS::ApplicationAutoScaling::ScalingPolicy')
-    expect(d).toHaveProperty('Properties.PolicyName', names.policyScale('', 'my-table-name', false))
-    expect(d).toHaveProperty('Properties.PolicyType', 'TargetTrackingScaling')
-    expect(d).toHaveProperty('Properties.ScalingTargetId', { Ref: names.target('', 'my-table-name', false) })
-    expect(d).toHaveProperty(
-      'Properties.TargetTrackingScalingPolicyConfiguration.PredefinedMetricSpecification.PredefinedMetricType',
-      names.metric(false)
-    )
 
     const c = d.Properties.TargetTrackingScalingPolicyConfiguration
 
-    expect(c).toHaveProperty('ScaleInCooldown', 60)
-    expect(c).toHaveProperty('ScaleOutCooldown', 70)
-    expect(c).toHaveProperty('TargetValue', 15)
+    expect(c).toHaveProperty('ScaleInCooldown', 20)
+    expect(c).toHaveProperty('ScaleOutCooldown', 30)
+    expect(c).toHaveProperty('TargetValue', 10)
   })
 })

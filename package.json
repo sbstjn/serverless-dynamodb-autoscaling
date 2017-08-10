@@ -1,14 +1,17 @@
 {
   "name": "serverless-dynamodb-autoscaling",
   "description": "Serverless Plugin for Amazon DynamoDB Auto Scaling.",
+  "homepage": "https://sbstjn.com/serverless-dynamodb-auto-scaling-with-cloudformation.html",
   "version": "0.0.0",
   "main": "dist/plugin.js",
   "scripts": {
     "test": "jest",
     "test:cover": "jest --coverage",
+    "test:watch": "jest --watch",
     "coveralls": "cat ./coverage/lcov.info | coveralls",
     "lint": "tslint {src,test}/**/*.ts",
-    "build": "tsc"
+    "build": "tsc",
+    "build:watch": "tsc --watch"
   },
   "keywords": [
     "serverless",
@@ -30,17 +33,18 @@
   "bugs": {
     "url": "https://github.com/sbstjn/serverless-dynamodb-autoscaling/issues"
   },
-  "homepage": "https://github.com/sbstjn/serverless-dynamodb-autoscaling",
   "devDependencies": {
     "@types/jest": "^20.0.5",
+    "@types/lodash": "^4.14.71",
+    "@types/md5": "^2.1.32",
     "@types/node": "^8.0.19",
     "coveralls": "^2.13.1",
     "dot-json": "^1.0.3",
+    "jasmine-data-provider": "^2.2.0",
     "jest": "^20.0.4",
+    "serverless-types": "^0.0.1",
     "ts-jest": "^20.0.7",
     "tslint": "^5.5.0",
-    "@types/md5": "^2.1.32",
-    "@types/lodash": "^4.14.71",
     "typescript": "^2.4.2"
   },
   "dependencies": {

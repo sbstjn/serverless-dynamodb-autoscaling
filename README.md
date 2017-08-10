@@ -71,6 +71,10 @@ An error occurred while provisioning your stack: XYZ - Unable to create alarms f
 Rate exceeded (Service: AmazonCloudWatch; Status Code: 400; Error Code: Throttling; Request ID: XYZ).
 ```
 
+### Breaking Changes
+
+*There have been multiple breaking changes regarding CloudFormation resource names in the past. If you end up with an error, that your CloudFormation Stack cannot be updated, try to remove the `custom > capacities` configuration from your `serverless.yml` file and deploy the service without any Auto Scaling configuration. After that, just re-add your previous configuration and deploy your service again.*
+
 ## DynamoDB
 
 The example serverless configuration above works fine for a DynamoDB table CloudFormation resource like this:
@@ -117,3 +121,18 @@ Feel free to use the code, it's released using the [MIT license](LICENSE.md).
 You are welcome to contribute to this project! 😘 
 
 To make sure you have a pleasant experience, please read the [code of conduct](CODE_OF_CONDUCT.md). It outlines core values and beliefs and will make working together a happier experience.
+
+### Local Development
+
+If you plan to change the TypeScript files and link the package to another project, use the `link` and `build` yarn commands:
+
+```
+$ > yarn link
+$ > yarn build:watch # or "yarn build"
+```
+
+Use your local build of the package in another project:
+
+```
+$ > yarn link serverless-dynamodb-autoscaling
+```
