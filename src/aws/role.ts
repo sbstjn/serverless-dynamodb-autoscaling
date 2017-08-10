@@ -23,10 +23,8 @@ export default class Role extends Resource {
   ) { super(options) }
 
   public toJSON(): any {
-    const n = new Name(this.options)
-
-    const RoleName = n.role()
-    const PolicyName = n.policyRole()
+    const RoleName = this.name.role()
+    const PolicyName = this.name.policyRole()
 
     const DependsOn = [ this.options.table ].concat(this.dependencies)
     const Principal = this.principal()

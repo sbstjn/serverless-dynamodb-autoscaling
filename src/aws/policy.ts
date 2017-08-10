@@ -13,11 +13,9 @@ export default class Policy extends Resource {
   ) { super(options) }
 
   public toJSON(): any {
-    const n = new Name(this.options)
-
-    const PredefinedMetricType = n.metric(this.read)
-    const PolicyName = n.policyScale(this.read)
-    const Target = n.target(this.read)
+    const PredefinedMetricType = this.name.metric(this.read)
+    const PolicyName = this.name.policyScale(this.read)
+    const Target = this.name.target(this.read)
 
     const DependsOn = [ this.options.table, Target ].concat(this.dependencies)
 

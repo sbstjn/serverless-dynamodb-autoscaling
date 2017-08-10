@@ -12,17 +12,15 @@ export default class Target extends Resource {
   ) { super(options) }
 
   public toJSON(): any {
-    const n = new Name(this.options)
-
     const resource = [ 'table/', { Ref: this.options.table } ]
 
     if (this.options.index !== '') {
       resource.push('/index/', this.options.index)
     }
 
-    const nameTarget = n.target(this.read)
-    const nameRole = n.role()
-    const nameDimension = n.dimension(this.read)
+    const nameTarget = this.name.target(this.read)
+    const nameRole = this.name.role()
+    const nameDimension = this.name.dimension(this.read)
 
     const DependsOn = [ this.options.table, nameRole ].concat(this.dependencies)
 
