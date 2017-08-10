@@ -2,9 +2,9 @@ import { default as Name, Options } from './name'
 import Resource from './resource'
 
 export default class Role extends Resource {
-  private type: string = 'AWS::IAM::Role'
-  private version: string = '2012-10-17'
-  private actions = {
+  private readonly type: string = 'AWS::IAM::Role'
+  private readonly version: string = '2012-10-17'
+  private readonly actions = {
     CloudWatch: [
       'cloudwatch:PutMetricAlarm',
       'cloudwatch:DescribeAlarms',

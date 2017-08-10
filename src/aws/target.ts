@@ -2,7 +2,7 @@ import { default as Name, Options } from './name'
 import Resource from './resource'
 
 export default class Target extends Resource {
-  private type = 'AWS::ApplicationAutoScaling::ScalableTarget'
+  private readonly type = 'AWS::ApplicationAutoScaling::ScalableTarget'
 
   constructor (
     options: Options,

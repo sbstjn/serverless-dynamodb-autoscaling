@@ -2,7 +2,7 @@ import { default as Name, Options } from './name'
 import Resource from './resource'
 
 export default class Policy extends Resource {
-  private type: string = 'AWS::ApplicationAutoScaling::ScalingPolicy'
+  private readonly type: string = 'AWS::ApplicationAutoScaling::ScalingPolicy'
 
   constructor (
     options: Options,
