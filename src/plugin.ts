@@ -2,7 +2,6 @@ import * as assert from 'assert'
 import * as _ from 'lodash'
 import * as util from 'util'
 
-import { Options } from './aws/name'
 import Policy from './aws/policy'
 import Role from './aws/role'
 import Target from './aws/target'

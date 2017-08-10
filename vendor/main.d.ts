@@ -12,6 +12,14 @@ declare interface CapacityConfiguration {
   usage: number
 }
 
+declare interface Options {
+  index: string
+  region: string
+  service: string
+  stage: string
+  table: string
+}
+
 /**
  * Merged with empty default Serverless.Service.Custom declaration
  */

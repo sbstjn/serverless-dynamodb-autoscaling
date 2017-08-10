@@ -1,4 +1,4 @@
-import { default as Resource, Options } from './resource'
+import Resource from './resource'
 
 export default class Policy extends Resource {
   private readonly type: string = 'AWS::ApplicationAutoScaling::ScalingPolicy'

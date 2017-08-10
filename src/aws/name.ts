@@ -10,14 +10,6 @@ const TEXT = {
   TARGET: 'AutoScalingTarget-%s'
 }
 
-export interface Options {
-  index: string
-  region: string
-  service: string
-  stage: string
-  table: string
-}
-
 function clean(input: string): string {
   return truncate(input.replace(/[^a-z0-9+]+/gi, ''))
 }

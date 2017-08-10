@@ -1,4 +1,4 @@
-import { default as Name, Options } from './name'
+import Name from './name'
 
 export default class Resource {
   protected dependencies: string[] = []
@@ -14,5 +14,3 @@ export default class Resource {
     return this
   }
 }
-
-export type Options = Options
