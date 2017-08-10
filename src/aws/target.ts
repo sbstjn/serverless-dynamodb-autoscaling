@@ -1,5 +1,4 @@
-import { Options } from './name'
-import Resource from './resource'
+import { default as Resource, Options } from './resource'
 
 export default class Target extends Resource {
   private readonly type = 'AWS::ApplicationAutoScaling::ScalableTarget'

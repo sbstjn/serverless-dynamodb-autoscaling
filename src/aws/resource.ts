@@ -14,3 +14,5 @@ export default class Resource {
     return this
   }
 }
+
+export type Options = Options
