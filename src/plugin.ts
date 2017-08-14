@@ -124,10 +124,17 @@ class Plugin {
   }
 
   private getPolicyAndTarget(options: Options, data: Defaults, read: boolean): any[] {
-    return [
-      new Policy(options, false, data.read.usage * 100, 60, 60),
-      new Target(options, false, data.read.minimum, data.read.maximum)
-    ]
+    if (read === true) {
+      return [
+        new Policy(options, read, data.read.usage * 100, 60, 60),
+        new Target(options, read, data.read.minimum, data.read.maximum)
+      ]
+    } else {
+      return [
+        new Policy(options, read, data.write.usage * 100, 60, 60),
+        new Target(options, read, data.write.minimum, data.write.maximum)
+      ]
+    }
   }
 
   /**
