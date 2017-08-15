@@ -123,6 +123,9 @@ class Plugin {
     return resources
   }
 
+  /**
+   * Create Policy and Target resource
+   */
   private getPolicyAndTarget(options: Options, data: CapacityConfiguration, read: boolean): any[] {
     return [
       new Policy(options, read, data.usage * 100, 60, 60),
