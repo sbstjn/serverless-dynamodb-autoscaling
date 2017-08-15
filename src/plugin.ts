@@ -112,21 +112,24 @@ class Plugin {
 
     // Only add Auto Scaling for read capacity if configuration set is available
     if (!!config.read) {
-      resources.push(...this.getPolicyAndTarget(options, data, true))
+      resources.push(...this.getPolicyAndTarget(options, data.read, true))
     }
 
     // Only add Auto Scaling for write capacity if configuration set is available
     if (!!config.write) {
-      resources.push(...this.getPolicyAndTarget(options, data, false))
+      resources.push(...this.getPolicyAndTarget(options, data.write, false))
     }
 
     return resources
   }
 
-  private getPolicyAndTarget(options: Options, data: Defaults, read: boolean): any[] {
+  /**
+   * Create Policy and Target resource
+   */
+  private getPolicyAndTarget(options: Options, data: CapacityConfiguration, read: boolean): any[] {
     return [
-      new Policy(options, false, data.read.usage * 100, 60, 60),
-      new Target(options, false, data.read.minimum, data.read.maximum)
+      new Policy(options, read, data.usage * 100, 60, 60),
+      new Target(options, read, data.minimum, data.maximum)
     ]
   }
 
