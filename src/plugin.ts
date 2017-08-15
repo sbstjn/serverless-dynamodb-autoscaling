@@ -124,17 +124,12 @@ class Plugin {
   }
 
   private getPolicyAndTarget(options: Options, data: Defaults, read: boolean): any[] {
-    if (read === true) {
-      return [
-        new Policy(options, read, data.read.usage * 100, 60, 60),
-        new Target(options, read, data.read.minimum, data.read.maximum)
-      ]
-    } else {
-      return [
-        new Policy(options, read, data.write.usage * 100, 60, 60),
-        new Target(options, read, data.write.minimum, data.write.maximum)
-      ]
-    }
+    const settings = data[ read ? 'read' : 'write' ]
+
+    return [
+      new Policy(options, read, settings.usage * 100, 60, 60),
+      new Target(options, read, settings.minimum, settings.maximum)
+    ]
   }
 
   /**
