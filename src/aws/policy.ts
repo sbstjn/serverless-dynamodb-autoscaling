@@ -15,8 +15,13 @@ export default class Policy extends Resource {
     const PredefinedMetricType = this.name.metric(this.read)
     const PolicyName = this.name.policyScale(this.read)
     const Target = this.name.target(this.read)
-
-    const DependsOn = [ this.options.table, Target ].concat(this.dependencies)
+    let DependsOn;
+    if(this.options.table && this.options.table['name'] && typeof this.options.table['name'] === 'string'){
+      DependsOn = [ Target ].concat(this.dependencies)
+    }
+    else{
+     DependsOn = [ this.options.table, Target ].concat(this.dependencies)
+    }
 
     return {
       [PolicyName]: {

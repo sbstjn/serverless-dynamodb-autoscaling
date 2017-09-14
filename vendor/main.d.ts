@@ -17,7 +17,7 @@ declare interface Options {
   region: string
   service: string
   stage: string
-  table: string
+  table: Object
 }
 
 /**
