@@ -2,7 +2,7 @@
   "name": "serverless-dynamodb-autoscaling",
   "description": "Serverless Plugin for Amazon DynamoDB Auto Scaling.",
   "homepage": "https://sbstjn.com/serverless-dynamodb-auto-scaling-with-cloudformation.html",
-  "version": "0.0.6",
+  "version": "0.0.0",
   "main": "dist/plugin.js",
   "scripts": {
     "test": "jest",
