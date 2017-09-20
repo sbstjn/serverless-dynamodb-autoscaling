@@ -21,7 +21,7 @@ interface Defaults {
   write: CapacityConfiguration
 }
 
-class Plugin {
+class AWSDBAutoScaling {
   public hooks: {}
 
   /**
@@ -203,4 +203,4 @@ class Plugin {
   }
 }
 
-module.exports = Plugin
+module.exports = AWSDBAutoScaling
