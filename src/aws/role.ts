@@ -17,15 +17,20 @@ export default class Role extends Resource {
     ]
   }
 
-  constructor (
+  constructor(
     options: Options
   ) { super(options) }
 
   public toJSON(): any {
     const RoleName = this.name.role()
     const PolicyName = this.name.policyRole()
-
-    const DependsOn = [ this.options.table ].concat(this.dependencies)
+    let DependsOn;
+    if (this.options.table && this.options.table['name'] && typeof this.options.table['name'] === 'string') {
+      DependsOn = this.dependencies;
+    }
+    else {
+      DependsOn = [this.options.table].concat(this.dependencies)
+    }
     const Principal = this.principal()
     const Version = this.version
     const Type = this.type
@@ -60,8 +65,15 @@ export default class Role extends Resource {
   }
 
   private resource(): {} {
-    return {
-      'Fn::Join': [ '', [ 'arn:aws:dynamodb:*:', { Ref: 'AWS::AccountId' }, ':table/', { Ref: this.options.table } ] ]
+    if (this.options.table && this.options.table['name'] && typeof this.options.table['name'] === 'string') {
+      return {
+        'Fn::Join': ['', ['arn:aws:dynamodb:*:', { Ref: 'AWS::AccountId' }, `:table/${this.options.table['name']}`]]
+      }
+    }
+    else {
+      return {
+        'Fn::Join': ['', ['arn:aws:dynamodb:*:', { Ref: 'AWS::AccountId' }, ':table/', { Ref: this.options.table }]]
+      }
     }
   }
 

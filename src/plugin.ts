@@ -89,7 +89,7 @@ class AWSDBAutoScaling {
   /**
    * Create CloudFormation resources for table (and optional index)
    */
-  private resources(table: string, index: string, config: Capacity): any[] {
+  private resources(table: Object, index: string, config: Capacity): any[] {
     const data = this.defaults(config)
 
     const options: Options = {
@@ -102,7 +102,7 @@ class AWSDBAutoScaling {
 
     // Start processing configuration
     this.serverless.cli.log(
-      util.format(text.CLI_RESOURCE, table, (index ? ('/index/' + index) : ''))
+      util.format(text.CLI_RESOURCE, table['name'] ? table['name'] : table, (index ? ('/index/' + index) : ''))
     )
 
     // Add role to manage Auto Scaling policies
@@ -136,7 +136,7 @@ class AWSDBAutoScaling {
   /**
    * Generate CloudFormation resources for DynamoDB table and indexes
    */
-  private generate(table: string, config: Capacity) {
+  private generate(table: Object, config: Capacity) {
     let resources: any[] = []
     let lastRessources: any[] = []
 
@@ -178,7 +178,7 @@ class AWSDBAutoScaling {
       (config: Capacity) => !!config.read || !!config.write
     ).forEach(
       (config: Capacity) => this.normalize(config.table).forEach(
-        (table: string) => this.generate(table, config).forEach(
+        (table: Object) => this.generate(table, config).forEach(
           (resource: string) => _.merge(
             this.serverless.service.provider.compiledCloudFormationTemplate.Resources,
             resource
