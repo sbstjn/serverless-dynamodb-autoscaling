@@ -29,7 +29,7 @@ class AWSDBAutoScaling {
    */
   constructor (private serverless: Serverless) {
     this.hooks = {
-      'before:package:createDeploymentArtifacts': this.beforeDeployResources.bind(this)
+      'package:compileEvents': this.beforeDeployResources.bind(this)
     }
   }
 
