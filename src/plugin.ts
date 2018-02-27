@@ -12,7 +12,7 @@ const text = {
   CLI_SKIP: 'Skipping DynamoDB Auto Scaling: %s!',
   CLI_START: 'Configure DynamoDB Auto Scaling …',
   INVALID_CONFIGURATION: 'Invalid serverless configuration',
-  NO_AUTOSCALING_CONFIG: 'Not Auto Scaling configuration found',
+  NO_AUTOSCALING_CONFIG: 'No Auto Scaling configuration found',
   ONLY_AWS_SUPPORT: 'Only supported for AWS provicer'
 }
 
