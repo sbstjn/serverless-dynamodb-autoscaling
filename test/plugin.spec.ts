@@ -1,17 +1,5 @@
 import * as Plugin from '../src/plugin'
 
-describe('Normalize', () => {
-  it('converts everything to an array', () => {
-    const test = new Plugin({ service: { provider: { stage: 'foo' } } })
-
-    expect(test.normalize('test')).toEqual(['test'])
-    expect(test.normalize(['test'])).toEqual(['test'])
-    expect(test.normalize(['test', 'foo'])).toEqual(['test', 'foo'])
-    expect(test.normalize([])).toEqual([])
-    expect(test.normalize()).toEqual([])
-  })
-})
-
 describe('Defaults', () => {
   it('creates object with defaults', () => {
     const config = {

@@ -4,6 +4,7 @@ declare interface Capacity {
   indexOnly?: boolean
   write?: CapacityConfiguration
   read?: CapacityConfiguration
+  generateRoles?: boolean
 }
 
 declare interface CapacityConfiguration {
@@ -18,6 +19,12 @@ declare interface Options {
   service: string
   stage: string
   table: string
+  role?: string
+}
+
+declare interface AutoScalingOptions {
+  role?: string // external role logical id
+  capacities: Capacity[]
 }
 
 /**
@@ -26,7 +33,7 @@ declare interface Options {
 declare namespace Serverless {
   namespace Service {
     interface Custom {
-      capacities: Capacity[]
+      ['dynamodb-autoscaling']: AutoScalingOptions
     }
   }
 }
