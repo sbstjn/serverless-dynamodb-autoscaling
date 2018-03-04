@@ -13,4 +13,8 @@ export default class Resource {
 
     return this
   }
+
+  public toJSON():any {
+    throw new Error('override this')
+  }
 }

@@ -18,7 +18,7 @@ export default class Target extends Resource {
     }
 
     const nameTarget = this.name.target(this.read)
-    const nameRole = this.name.role()
+    const nameRole = this.options.role || this.name.role()
     const nameDimension = this.name.dimension(this.read)
 
     const DependsOn = [ this.options.table, nameRole ].concat(this.dependencies)
