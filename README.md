@@ -16,7 +16,7 @@ Add the [NPM package](https://www.npmjs.com/package/serverless-dynamodb-autoscal
 $ yarn add serverless-dynamodb-autoscaling
 
 # Via npm
-$ npm install serverless-dynamodb-autoscaling
+$ npm install --save-dev serverless-dynamodb-autoscaling
 ```
 
 Add the plugin to your `serverless.yml`:
