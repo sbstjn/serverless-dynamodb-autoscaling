@@ -2,6 +2,7 @@ declare interface Capacity {
   table: string | string[]
   index: string | string[]
   indexOnly?: boolean
+  roleArn?: string
   write?: CapacityConfiguration
   read?: CapacityConfiguration
 }
@@ -18,6 +19,7 @@ declare interface Options {
   service: string
   stage: string
   table: string
+  roleArn?: string
 }
 
 /**

@@ -106,9 +106,13 @@ class AWSDBAutoScaling {
     )
 
     // Add role to manage Auto Scaling policies
-    const resources: any[] = [
-      new Role(options)
-    ]
+    const resources: any[] = []
+
+    if (!config.roleArn) {
+      resources.push(new Role(options))
+    } else {
+      options.roleArn = config.roleArn
+    }
 
     // Only add Auto Scaling for read capacity if configuration set is available
     if (!!config.read) {
