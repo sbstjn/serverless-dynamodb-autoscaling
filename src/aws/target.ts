@@ -19,9 +19,18 @@ export default class Target extends Resource {
 
     const nameTarget = this.name.target(this.read)
     const nameRole = this.name.role()
+    const roleArn = this.options.roleArn
     const nameDimension = this.name.dimension(this.read)
 
-    const DependsOn = [ this.options.table, nameRole ].concat(this.dependencies)
+    const DependsOn = [ this.options.table ].concat(this.dependencies)
+
+    let accessRoleArn: any = { 'Fn::GetAtt': [ nameRole, 'Arn' ] }
+
+    if (!!roleArn) {
+      accessRoleArn = `'${roleArn}'`
+    } else {
+      DependsOn.concat(nameRole)
+    }
 
     return {
       [nameTarget]: {
@@ -30,7 +39,7 @@ export default class Target extends Resource {
           MaxCapacity: this.max,
           MinCapacity: this.min,
           ResourceId: { 'Fn::Join': [ '', resource ] },
-          RoleARN: { 'Fn::GetAtt': [ nameRole, 'Arn' ] },
+          RoleARN: accessRoleArn,
           ScalableDimension: nameDimension,
           ServiceNamespace: 'dynamodb'
         },
